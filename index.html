@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Whats your MBTI?</title>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <img src="" alt="" class="logo-image">
+    </div>
+    <div class="user-actions">
+        <div class="icon-btn"><i class="fa-solid fa-bell"></i></div>
+        <div class="icon-btn"><i class="fa-solid fa-user"></i></div>
+    </div>
+</header>
+
+<!-- MAIN PAGE -->
+<section class="page active" id="page-intro">
+    <h1>What's Your MBTI?</h1>
+    <p>Answer a few questions to find out!</p>
+    <button id="start-btn">Start Quiz</button>
+</section>
+
+<section class="page" id="page-quiz">
+    <p id="question-progress"></p>
+    <h2 id="question-text"></h2>
+    <div id ="choices-container"></div>
+</section>
+
+<section class="page" id="page-results">
+    <h2>Your MBTI Result:</h2>
+    <p id="result-type"></p>
+    <button id="restart-btn">Restart Quiz</button>
+</section>
+
+<script src="script.js"></script>
+
+</body>
+</html>
