@@ -10,6 +10,7 @@ const startBtn = document.getElementById("start-btn");
 const questionProgress = document.getElementById("question-progress");
 const questionText = document.getElementById("question-text");
 const choicesContainer = document.getElementById("choices-container");
+const restartBtn = document.getElementById("restart-btn");
 
 const resultType = document.getElementById("result-type");
 const resultBtn = document.getElementById("result-btn");
@@ -31,16 +32,20 @@ function loadQuestions() {
 function renderQuestion() {
     const currentQuestion = questionsData[currentIndex];
     questionProgress.textContent = `Question ${currentIndex + 1} of ${questionsData.length}`;
-    questionText.textContent = currentQuestion.text;
+    questionText.textContent = currentQuestion.question;
 
     choicesContainer.innerHTML = "";
 
     currentQuestion.choices.forEach(choice => {
         const choiceBtn = document.createElement("button");
-        choiceBtn.textContent = choice.text;
+        choiceBtn.textContent = choice.choice;
         choiceBtn.classList.add("choice-btn");
         choiceBtn.addEventListener("click", () => selectAnswer(currentQuestion.id, choice.preference));
         choicesContainer.appendChild(choiceBtn);
+
+        choicesContainer.style.display = "flex";
+        choicesContainer.style.flexDirection = "column";
+        choicesContainer.style.gap = "10px";
     });
 }
 

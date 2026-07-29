@@ -5,8 +5,8 @@
             "question": "It's the first week of the semester. You'd rather...",
             "key": "EI",
             "choices": [
-            {"c1": "Join a group project chat and start throwing out ideas","preference": "E"},
-            {"c2": "Read through the syllabus twice before saying anything","preference": "I"}
+                {"choice": "Join a group project chat and start throwing out ideas","preference": "E"},
+                {"choice": "Read through the syllabus twice before saying anything","preference": "I"}
             ]
         },
 
@@ -14,9 +14,9 @@
             "id": "q2",
             "question": "You just solved a tricky bug in your code. What now?",
             "key": "EI",
-            "options": [
-                {"c1": "Tell everyone in the group chat immediately", "preference": "E"},
-                {"c2": "Quietly commit it and move on to the next problem", "preference": "I"},
+            "choices": [
+                {"choice": "Tell everyone in the group chat immediately", "preference": "E"},
+                {"choice": "Quietly commit it and move on to the next problem", "preference": "I"}
             ]
         },
 
@@ -25,8 +25,8 @@
             "question": "Given a messy dataset, your first instinct is to...",
             "key": "SN",
             "choices": [
-                {"c1": "Check column types, nulls, and ranges row by row", "preference": "S"},
-                {"c2": "Picture the whole pipeline and where this fits in it", "preference": "N"}
+                {"choice": "Check column types, nulls, and ranges row by row", "preference": "S"},
+                {"choice": "Picture the whole pipeline and where this fits in it", "preference": "N"}
             ]
         },
 
@@ -35,8 +35,8 @@
             "question": "In a lecture on a new model architecture, you're most drawn to...",
             "key": "SN",
             "choices": [
-                {"c1": "The exact formulas and implementation details", "preference": "S"},
-                {"c2": "The bigger idea it borrows from and where else it could apply", "preference": "N"}
+                {"choice": "The exact formulas and implementation details", "preference": "S"},
+                {"choice": "The bigger idea it borrows from and where else it could apply", "preference": "N"}
             ]
         },
 
@@ -45,8 +45,8 @@
             "question": "Your teammate's approach to the project is inefficient. You...",
             "key": "TF",
             "choices": [
-                {"c1": "Point out the flaw directly so it gets fixed", "preference": "T"},
-                {"c2": "Ease into it, framing it as a suggestion", "preference": "F"}
+                {"choice": "Point out the flaw directly so it gets fixed", "preference": "T"},
+                {"choice": "Ease into it, framing it as a suggestion", "preference": "F"}
             ]
         },
 
@@ -55,8 +55,8 @@
             "question": "When picking a project topic for the team, you weigh...",
             "key": "TF",
             "choices": [
-                {"c1": "Which idea is technically the most interesting", "preference": "T"},
-                {"c2": "Which idea the whole team will enjoy working on", "preference": "F"}
+                {"choice": "Which idea is technically the most interesting", "preference": "T"},
+                {"choice": "Which idea the whole team will enjoy working on", "preference": "F"}
             ]
         },
 
@@ -65,8 +65,8 @@
             "question": "Two weeks before a deadline, your notebook looks like....",
             "key": "JP",
             "choices": [
-                {"c1": "A clear plan with milestones already checked off", "preference": "J"},
-                {"c2": "A dozen open tabs and experiments in progress", "preference": "P"}
+                {"choice": "A clear plan with milestones already checked off", "preference": "J"},
+                {"choice": "A dozen open tabs and experiments in progress", "preference": "P"}
             ]
         },
 
@@ -75,8 +75,8 @@
             "question": "Your ideal way to explore a new dataset is to...",
             "key": "JP",
             "choices": [
-                {"c1": "Follow a structured EDA checklist top to bottom", "preference": "J"},
-                {"c2": "Poke around wherever looks interesting first", "preference": "P"}
+                {"choice": "Follow a structured EDA checklist top to bottom", "preference": "J"},
+                {"choice": "Poke around wherever looks interesting first", "preference": "P"}
             ]
         }
     ]
