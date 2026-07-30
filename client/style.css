@@ -3,21 +3,14 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-    --primary: #00d4d4;
-    --light:   #e0fbfb;
-    --card:    #b8e8f0;
-    --heading: #003366;
-    --teal:    #278693;
-    --white:   #ffffff;
+    --primary: #ffffff;
+    --light:   #f6efef;
     --pill:    999px;
-    --low:     #52c97a;
-    --mid:     #f0b429;
-    --high:    #e55353;
 }
 
 body {
     font-family: 'Inter', sans-serif;
-    background: #f0fafa;
+    background: #dcd7d7;
     min-height: 100vh;
 }
 
@@ -27,7 +20,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 12px 40px;
-    background: linear-gradient(to right, #fff 0%, #d0f8f8 20%, var(--primary) 100%);
+    background: linear-gradient(to right, #bda6a6 0%, #d0f8f8 20%, var(--primary) 100%);
     position: sticky;
     top: 0;
     z-index: 100;

@@ -21,7 +21,7 @@ function showPage(pageToShow) {
 }
 
 function loadQuestions() {
-    fetch("questions.json")
+    fetch("server/questions.json")
         .then(response => response.json())
         .then(data => {
             questionsData = data.questions;
