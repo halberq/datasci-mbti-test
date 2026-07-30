@@ -68,7 +68,7 @@ function submitAnswers() {
     })
     .then(response => response.json())
     .then(data => {
-        resultType.textContent = data.type;
+        resultType.textContent = data.type_code;
         showPage(pageResult);
     })
     .catch(error => console.error("Error submitting answers:", error));
