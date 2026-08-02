@@ -32,7 +32,7 @@ function loadQuestions() {
 function renderQuestion() {
     const currentQuestion = questionsData[currentIndex];
     questionProgress.textContent = `Question ${currentIndex + 1} of ${questionsData.length}`;
-    questionText.textContent = currentQuestion.text;
+    questionText.textContent = currentQuestion.question;
 
     choicesContainer.innerHTML = "";
 
