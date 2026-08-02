@@ -95,6 +95,7 @@ function submitAnswers() {
 function sendToGoogleSheets(sessionData) {
     fetch("https://script.google.com/macros/s/AKfycbxgPVlnRnsvvNW6fMPrgb2L88tlYQO6eah-YFTvoN3XYJX8Um0oXDRsfe1CpTTRKWMA/exec", {
         method: "POST",
+        mode: "no-cors",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(sessionData)
     })
