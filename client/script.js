@@ -160,7 +160,7 @@ function renderChart(counts) {
 }
 
 function startPolling() {
-    fetchAndRenderAnalytics();                         
+    fetchAndRenderAnalytics("https://script.google.com/macros/s/AKfycbxgPVlnRnsvvNW6fMPrgb2L88tlYQO6eah-YFTvoN3XYJX8Um0oXDRsfe1CpTTRKWMA/exec");                         
     pollIntervalId = setInterval(fetchAndRenderAnalytics, 15000); 
 }
 
