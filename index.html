@@ -13,11 +13,15 @@
 
 <header>
     <div class="logo">
+        <nav>
+        <button id="nav-quiz-btn">Quiz</button>
+        <button id="nav-analytics-btn">Analytics</button>
+        </nav>
         <img src="" alt="" class="logo-image">
     </div>
 </header>
 
-<!-- MAIN PAGE -->
+<!-- USERNAME PAGE -->
 <section class="page active" id="page-username">
     <h1>Welcome!</h1>
     <p>Enter your name to begin.</p>
@@ -25,12 +29,14 @@
     <button id="username-confirm-btn">Continue</button>
 </section>
 
+<!-- INTRO PAGE -->
 <section class="page" id="page-intro">
     <h1 id="intro-greeting"></h1>
     <p>Answer a few questions to find out!</p>
     <button id="start-btn">Start Quiz</button>
 </section>
 
+<!-- QUIZ PAGE -->
 <section class="page" id="page-quiz">
     <p id="question-progress"></p>
     <h2 id="question-text">
@@ -41,10 +47,18 @@
     </div>
 </section>
 
+<!-- RESULTS PAGE -->
 <section class="page" id="page-result">
     <h2 id="result-message"></h2>
     <p id="result-type"></p>
     <button id="restart-btn">Restart Quiz</button>
+</section>
+
+<!-- ANALYTICS PAGE -->
+ <section class="page" id="page-analytics">
+    <h2>Live Results</h2>
+    <p id="analytics-total"></p>
+    <canvas id="analytics-chart"></canvas>
 </section>
 
 <script src="client/script.js"></script>

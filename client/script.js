@@ -4,28 +4,42 @@ let userAnswers = {};
 let username = "";
 let finalType = "";
 
+// Page elements
 const pageUsername = document.getElementById("page-username");
 const pageIntro = document.getElementById("page-intro");
 const pageQuiz = document.getElementById("page-quiz");
 const pageResult = document.getElementById("page-result");
 
+// Username elements
 const usernameInput = document.getElementById("username-input");            
 const usernameConfirmBtn = document.getElementById("username-confirm-btn");
 
+// Intro elements
 const introGreeting = document.getElementById("intro-greeting");  
 const resultMessage = document.getElementById("result-message");
 
+// Quiz elements
 const startBtn = document.getElementById("start-btn");
 const questionProgress = document.getElementById("question-progress");
 const questionText = document.getElementById("question-text");
 const choicesContainer = document.getElementById("choices-container");
 const restartBtn = document.getElementById("restart-btn");
 
+// Result elements
 const resultType = document.getElementById("result-type");
 const resultBtn = document.getElementById("result-btn");
 
+// Analytics elements
+const navQuizBtn = document.getElementById("nav-quiz-btn");
+const navAnalyticsBtn = document.getElementById("nav-analytics-btn");
+const pageAnalytics = document.getElementById("page-analytics");
+const analyticsTotal = document.getElementById("analytics-total");
+
+let analyticsChart = null; 
+let pollIntervalId = null;
+
 function showPage(pageToShow) {
-    [pageUsername, pageIntro, pageQuiz, pageResult].forEach(page => page.classList.remove("active"));
+    [pageUsername, pageIntro, pageQuiz, pageResult, pageAnalytics].forEach(page => page.classList.remove("active"));
     pageToShow.classList.add("active");
 }
 
@@ -106,6 +120,54 @@ function sendToGoogleSheets(sessionData) {
     .catch(error => console.error("Error sending data to Google Sheets:", error));
 }
 
+function aggregateData(rows) {
+    const seenUsernames = new Set(); 
+    const counts = {};               
+
+    for (let i = rows.length - 1; i >= 0; i--) {
+        const row = rows[i];
+        if (seenUsernames.has(row.username)) continue; // already counted this person, skip
+        seenUsernames.add(row.username);
+        counts[row.type] = (counts[row.type] || 0) + 1;
+    }
+
+    return counts;
+}
+
+function renderChart(counts) {
+    const labels = Object.keys(counts);   
+    const values = Object.values(counts); 
+
+    if (analyticsChart) {
+        analyticsChart.data.labels = labels;
+        analyticsChart.data.datasets[0].data = values;
+        analyticsChart.update();
+    } else {
+        const ctx = document.getElementById("analytics-chart").getContext("2d");
+        analyticsChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{ label: "Number of participants", data: values }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } // whole numbers only on the axis
+            }
+        });
+    }
+}
+
+function startPolling() {
+    fetchAndRenderAnalytics();                         
+    pollIntervalId = setInterval(fetchAndRenderAnalytics, 15000); 
+}
+
+function stopPolling() {
+    clearInterval(pollIntervalId); 
+    pollIntervalId = null;
+}
+
 usernameConfirmBtn.addEventListener("click", () => {
     const enteredUsername = usernameInput.value.trim();
 
@@ -144,6 +206,16 @@ restartBtn.addEventListener("click", () => {
     usernameInput.value = "";
 
     showPage(pageUsername);
+});
+
+navAnalyticsBtn.addEventListener("click", () => {
+    showPage(pageAnalytics);
+    startPolling(); 
+});
+
+navQuizBtn.addEventListener("click", () => {
+    stopPolling(); 
+    showPage(pageIntro);
 });
 
 loadQuestions();
