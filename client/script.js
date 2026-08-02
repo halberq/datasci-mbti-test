@@ -159,8 +159,19 @@ function renderChart(counts) {
     }
 }
 
+function fetchAndRenderAnalytics() {
+    fetch("https://script.google.com/macros/s/AKfycbxgPVlnRnsvvNW6fMPrgb2L88tlYQO6eah-YFTvoN3XYJX8Um0oXDRsfe1CpTTRKWMA/exec") 
+        .then(response => response.json())
+        .then(rows => {
+            const counts = aggregateData(rows);
+            renderChart(counts);
+            analyticsTotal.textContent = `${rows.length} total submissions`;
+        })
+        .catch(error => console.error("Error fetching analytics:", error));
+}
+
 function startPolling() {
-    fetchAndRenderAnalytics("https://script.google.com/macros/s/AKfycbxgPVlnRnsvvNW6fMPrgb2L88tlYQO6eah-YFTvoN3XYJX8Um0oXDRsfe1CpTTRKWMA/exec");                         
+    fetchAndRenderAnalytics();                         
     pollIntervalId = setInterval(fetchAndRenderAnalytics, 15000); 
 }
 
