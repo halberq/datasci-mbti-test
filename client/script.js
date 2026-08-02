@@ -93,7 +93,16 @@ function submitAnswers() {
 }
 
 function sendToGoogleSheets(sessionData) {
-    console.log("Data ready to send to Google Sheets:", sessionData);  // temporary stand-in
+    fetch("https://script.google.com/macros/s/AKfycbxgPVlnRnsvvNW6fMPrgb2L88tlYQO6eah-YFTvoN3XYJX8Um0oXDRsfe1CpTTRKWMA/exec", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(sessionData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Data sent to Google Sheets:", data);
+    })
+    .catch(error => console.error("Error sending data to Google Sheets:", error));
 }
 
 usernameConfirmBtn.addEventListener("click", () => {
