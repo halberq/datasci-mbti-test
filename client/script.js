@@ -21,7 +21,7 @@ function showPage(pageToShow) {
 }
 
 function loadQuestions() {
-    fetch("server/questions.json")
+    fetch("questions.json")
         .then(response => response.json())
         .then(data => {
             questionsData = data.questions;
@@ -32,7 +32,7 @@ function loadQuestions() {
 function renderQuestion() {
     const currentQuestion = questionsData[currentIndex];
     questionProgress.textContent = `Question ${currentIndex + 1} of ${questionsData.length}`;
-    questionText.textContent = currentQuestion.question;
+    questionText.textContent = currentQuestion.text;
 
     choicesContainer.innerHTML = "";
 
