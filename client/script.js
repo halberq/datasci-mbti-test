@@ -37,6 +37,7 @@ const analyticsTotal = document.getElementById("analytics-total");
 
 let analyticsChart = null; 
 let pollIntervalId = null;
+let previousPage = pageIntro;
 
 function showPage(pageToShow) {
     [pageUsername, pageIntro, pageQuiz, pageResult, pageAnalytics].forEach(page => page.classList.remove("active"));
@@ -209,13 +210,19 @@ restartBtn.addEventListener("click", () => {
 });
 
 navAnalyticsBtn.addEventListener("click", () => {
+    const currentlyActive = document.querySelector(".page.active");
+    
+    if (currentlyActive !== pageAnalytics) {
+            previousPage = currentlyActive;
+        }
+
     showPage(pageAnalytics);
     startPolling(); 
 });
 
 navQuizBtn.addEventListener("click", () => {
     stopPolling(); 
-    showPage(pageIntro);
+    showPage(previousPage);
 });
 
 loadQuestions();
