@@ -81,6 +81,13 @@ function submitAnswers() {
         resultMessage.textContent = `${username}, your results show that your MBTI is ${finalType}!`;
         resultType.textContent = data.type_code;
         showPage(pageResult);
+
+        const sessionData = {
+            username: username,
+            answers: userAnswers,
+            type: finalType
+        };
+        sendToGoogleSheets(sessionData);
     })
     .catch(error => console.error("Error submitting answers:", error));
 }
@@ -119,8 +126,6 @@ restartBtn.addEventListener("click", () => {
         answers: userAnswers,          
         type: finalType                
     };
-
-    sendToGoogleSheets(sessionData);
 
     currentIndex = 0;        
     userAnswers = {};        
