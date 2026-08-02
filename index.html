@@ -18,8 +18,15 @@
 </header>
 
 <!-- MAIN PAGE -->
-<section class="page active" id="page-intro">
-    <h1>What's Your MBTI?</h1>
+<section class="page active" id="page-username">
+    <h1>Welcome!</h1>
+    <p>Enter your name to begin.</p>
+    <input type="text" id="username-input" placeholder="Your name">
+    <button id="username-confirm-btn">Continue</button>
+</section>
+
+<section class="page" id="page-intro">
+    <h1 id="intro-greeting"></h1>
     <p>Answer a few questions to find out!</p>
     <button id="start-btn">Start Quiz</button>
 </section>
@@ -35,7 +42,7 @@
 </section>
 
 <section class="page" id="page-result">
-    <h2>Your MBTI Result:</h2>
+    <h2 id="result-message"></h2>
     <p id="result-type"></p>
     <button id="restart-btn">Restart Quiz</button>
 </section>

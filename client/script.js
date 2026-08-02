@@ -1,10 +1,19 @@
 let questionsData = [];
 let currentIndex = 0;
 let userAnswers = {};
+let username = "";
+let finalType = "";
 
+const pageUsername = document.getElementById("page-username");
 const pageIntro = document.getElementById("page-intro");
 const pageQuiz = document.getElementById("page-quiz");
 const pageResult = document.getElementById("page-result");
+
+const usernameInput = document.getElementById("username-input");            
+const usernameConfirmBtn = document.getElementById("username-confirm-btn");
+
+const introGreeting = document.getElementById("intro-greeting");  
+const resultMessage = document.getElementById("result-message");
 
 const startBtn = document.getElementById("start-btn");
 const questionProgress = document.getElementById("question-progress");
@@ -16,7 +25,7 @@ const resultType = document.getElementById("result-type");
 const resultBtn = document.getElementById("result-btn");
 
 function showPage(pageToShow) {
-    [pageIntro, pageQuiz, pageResult].forEach(page => page.classList.remove("active"));
+    [pageUsername, pageIntro, pageQuiz, pageResult].forEach(page => page.classList.remove("active"));
     pageToShow.classList.add("active");
 }
 
@@ -68,11 +77,30 @@ function submitAnswers() {
     })
     .then(response => response.json())
     .then(data => {
+        finalType = data.type_code;
+        resultMessage.textContent = `${username}, your results show that your MBTI is ${finalType}!`;
         resultType.textContent = data.type_code;
         showPage(pageResult);
     })
     .catch(error => console.error("Error submitting answers:", error));
 }
+
+function sendToGoogleSheets(sessionData) {
+    console.log("Data ready to send to Google Sheets:", sessionData);  // temporary stand-in
+}
+
+usernameConfirmBtn.addEventListener("click", () => {
+    const enteredUsername = usernameInput.value.trim();
+
+    if (enteredUsername == "") {
+        alert("Please enter your name to continue.");
+        return;
+    }
+
+    username = enteredUsername;
+    introGreeting.textContent = `Welcome, ${username}! Press the button below to find out your MBTI!`;    
+    showPage(pageIntro);
+});
 
 startBtn.addEventListener("click", () => {
     showPage(pageQuiz);
@@ -83,6 +111,24 @@ restartBtn.addEventListener("click", () => {
     currentIndex = 0;
     userAnswers = {};
     showPage(pageIntro);
+});
+
+restartBtn.addEventListener("click", () => {
+    const sessionData = {              
+        username: username,            
+        answers: userAnswers,          
+        type: finalType                
+    };
+
+    sendToGoogleSheets(sessionData);
+
+    currentIndex = 0;        
+    userAnswers = {};        
+    username = "";           
+    finalType = "";          
+    usernameInput.value = "";
+
+    showPage(pageUsername);
 });
 
 loadQuestions();
