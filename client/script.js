@@ -79,6 +79,7 @@ function submitAnswers() {
     .then(data => {
         finalType = data.type_code;
         resultMessage.textContent = `${username}, your results show that your MBTI is ${finalType}!`;
+        resultType.textContent = data.type_code;
         showPage(pageResult);
     })
     .catch(error => console.error("Error submitting answers:", error));
