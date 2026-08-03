@@ -109,7 +109,7 @@
                 {"choice": "Follow a structured EDA checklist top to bottom", "preference": "J"},
                 {"choice": "Poke around wherever looks interesting first", "preference": "P"}
             ]
-        }
+        },
 
         {
             "id": "q12",
