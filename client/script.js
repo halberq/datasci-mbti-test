@@ -34,7 +34,7 @@ const navQuizBtn = document.getElementById("nav-quiz-btn");
 const navAnalyticsBtn = document.getElementById("nav-analytics-btn");
 const pageAnalytics = document.getElementById("page-analytics");
 const analyticsTotal = document.getElementById("analytics-total");
-const axisChartTotal = document.getElementById("axis-chart");
+const axisChartTotal = document.getElementById("axis-chart-total");
 
 let analyticsChart = null; 
 let pollIntervalId = null;
@@ -234,6 +234,7 @@ function fetchAndRenderAnalytics() {
 
             const axisCounts = tallyAxes(deduped);
             renderAxisChart(axisCounts);
+            axisChartTotal.textContent = "";
 
             analyticsTotal.textContent = `${deduped.length} total submissions`;
         })
