@@ -38,6 +38,8 @@ const analyticsTotal = document.getElementById("analytics-total");
 let analyticsChart = null; 
 let pollIntervalId = null;
 let previousPage = pageIntro;
+let axisChart = null;
+
 
 function showPage(pageToShow) {
     [pageUsername, pageIntro, pageQuiz, pageResult, pageAnalytics].forEach(page => page.classList.remove("active"));
@@ -121,18 +123,47 @@ function sendToGoogleSheets(sessionData) {
     .catch(error => console.error("Error sending data to Google Sheets:", error));
 }
 
-function aggregateData(rows) {
+function getDedupedRows(rows) {
     const seenUsernames = new Set(); 
-    const counts = {};               
+    const deduped = [];               
 
     for (let i = rows.length - 1; i >= 0; i--) {
         const row = rows[i];
         if (seenUsernames.has(row.username)) continue; // already counted this person, skip
         seenUsernames.add(row.username);
-        counts[row.type] = (counts[row.type] || 0) + 1;
+        deduped.push(row);
     }
 
+    return deduped;
+}
+
+function tallyTypes(dedupedRows) {
+    const counts = {}; 
+    dedupedRows.forEach(row => {
+        counts[row.type] = (counts[row.type] || 0) + 1;
+    });
     return counts;
+}
+
+function tallyAxes(dedupedRows) {
+    // pre-build the structure so every letter starts at 0, even if nobody picked it yet —
+    // avoids "undefined" gaps in the chart if, say, zero people are type "P" so far
+    const axisCounts = {
+        EI: { E: 0, I: 0 },
+        SN: { S: 0, N: 0 },
+        TF: { T: 0, F: 0 },
+        JP: { J: 0, P: 0 }
+    };
+
+    dedupedRows.forEach(row => {
+        const type = row.type; 
+        axisCounts.EI[type[0]]++; 
+        axisCounts.SN[type[1]]++;
+        axisCounts.TF[type[2]]++; 
+        axisCounts.JP[type[3]]++; 
+    });
+
+    return axisCounts;
 }
 
 function renderChart(counts) {
@@ -159,13 +190,47 @@ function renderChart(counts) {
     }
 }
 
+function renderAxisChart(axisCounts) {
+    const labels = ["E", "I", "S", "N", "T", "F", "J", "P"];
+    const values = [
+        axisCounts.EI.E, axisCounts.EI.I,
+        axisCounts.SN.S, axisCounts.SN.N,
+        axisCounts.TF.T, axisCounts.TF.F,
+        axisCounts.JP.J, axisCounts.JP.P
+    ];
+
+    if (axisChart) {
+        axisChart.data.datasets[0].data = values;
+        axisChart.update();
+    } else {
+        const ctx = document.getElementById("axis-chart").getContext("2d");
+        axisChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{ label: "Number of participants", data: values }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+            }
+        });
+    }
+}
+
 function fetchAndRenderAnalytics() {
     fetch("https://script.google.com/macros/s/AKfycbxgPVlnRnsvvNW6fMPrgb2L88tlYQO6eah-YFTvoN3XYJX8Um0oXDRsfe1CpTTRKWMA/exec") 
         .then(response => response.json())
         .then(rows => {
-            const counts = aggregateData(rows);
+            const deduped = getDedupedRows(rows);
+
+            const typeCounts = tallyTypes(deduped); 
             renderChart(counts);
-            analyticsTotal.textContent = `${rows.length} total submissions`;
+
+            const axisCounts = tallyAxes(deduped);
+            renderAxisChart(axisCounts);
+
+            analyticsTotal.textContent = `${deduped.length} total submissions`;
         })
         .catch(error => console.error("Error fetching analytics:", error));
 }
