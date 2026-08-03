@@ -34,6 +34,7 @@ const navQuizBtn = document.getElementById("nav-quiz-btn");
 const navAnalyticsBtn = document.getElementById("nav-analytics-btn");
 const pageAnalytics = document.getElementById("page-analytics");
 const analyticsTotal = document.getElementById("analytics-total");
+const axisChartTotal = document.getElementById("axis-chart");
 
 let analyticsChart = null; 
 let pollIntervalId = null;
@@ -221,6 +222,7 @@ function renderAxisChart(axisCounts) {
 function fetchAndRenderAnalytics() {
 
     analyticsTotal.textContent = "Loading...";
+    axisChartTotal.textContent = "Loading...";
 
     fetch("https://script.google.com/macros/s/AKfycbxgPVlnRnsvvNW6fMPrgb2L88tlYQO6eah-YFTvoN3XYJX8Um0oXDRsfe1CpTTRKWMA/exec") 
         .then(response => response.json())
