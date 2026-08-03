@@ -225,7 +225,7 @@ function fetchAndRenderAnalytics() {
             const deduped = getDedupedRows(rows);
 
             const typeCounts = tallyTypes(deduped); 
-            renderChart(counts);
+            renderChart(typeCounts);
 
             const axisCounts = tallyAxes(deduped);
             renderAxisChart(axisCounts);
