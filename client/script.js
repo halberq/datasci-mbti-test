@@ -219,6 +219,9 @@ function renderAxisChart(axisCounts) {
 }
 
 function fetchAndRenderAnalytics() {
+
+    analyticsTotal.textContent = "Loading...";
+
     fetch("https://script.google.com/macros/s/AKfycbxgPVlnRnsvvNW6fMPrgb2L88tlYQO6eah-YFTvoN3XYJX8Um0oXDRsfe1CpTTRKWMA/exec") 
         .then(response => response.json())
         .then(rows => {
@@ -232,7 +235,11 @@ function fetchAndRenderAnalytics() {
 
             analyticsTotal.textContent = `${deduped.length} total submissions`;
         })
-        .catch(error => console.error("Error fetching analytics:", error));
+
+        .catch(error => {
+            console.error("Error fetching analytics:", error);
+            analyticsTotal.textContent = "Unable to load results — retrying shortly...";
+        });   
 }
 
 function startPolling() {
