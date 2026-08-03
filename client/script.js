@@ -35,6 +35,7 @@ const navAnalyticsBtn = document.getElementById("nav-analytics-btn");
 const pageAnalytics = document.getElementById("page-analytics");
 const analyticsTotal = document.getElementById("analytics-total");
 const axisChartTotal = document.getElementById("axis-chart-total");
+const mostPickedStatus = document.getElementById("most-picked-status");
 
 let analyticsChart = null; 
 let pollIntervalId = null;
@@ -168,6 +169,67 @@ function tallyAxes(dedupedRows) {
     return axisCounts;
 }
 
+function tallyChoicesPerQuestion(dedupedRows) {
+    const questionTallies = {}; 
+    dedupedRows.forEach(row => {
+        let parsedAnswers;
+        try {
+            parsedAnswers = JSON.parse(row.answers); 
+        } catch (e) {
+            console.error("Skipping row with malformed answers:", row, e);
+            return; 
+        }
+
+        Object.entries(parsedAnswers).forEach(([questionId, preference]) => {
+            if (!questionTallies[questionId]) questionTallies[questionId] = {}; 
+            questionTallies[questionId][preference] = (questionTallies[questionId][preference] || 0) + 1; 
+        });
+    });
+
+    return questionTallies;
+}
+
+function getMostPickedChoices(questionTallies) {
+    const results = []; 
+    questionsData.forEach(question => { 
+        const tally = questionTallies[question.id];
+        if (!tally) return; 
+
+        let topPreference = null; 
+        let topCount = 0;
+        Object.entries(tally).forEach(([preference, count]) => {
+            if (count > topCount) {      
+                topPreference = preference;
+                topCount = count;
+            }
+        });
+
+        const matchingChoice = question.choices.find(choice => choice.preference === topPreference);
+
+        const totalVotes = Object.values(tally).reduce((sum, c) => sum + c, 0); 
+
+        results.push({
+            questionText: question.question,                        
+            mostPickedText: matchingChoice ? matchingChoice.choice : "N/A",
+            count: topCount,
+            totalVotes: totalVotes
+        });
+    });
+
+    return results;
+}
+
+function renderMostPicked(results) {
+    const container = document.getElementById("most-picked-container");
+    container.innerHTML = ""; 
+
+    results.forEach(result => {
+        const item = document.createElement("p"); 
+        item.textContent = `${result.questionText} → "${result.mostPickedText}" (${result.count}/${result.totalVotes})`;
+        container.appendChild(item);
+    });
+}
+
 function renderChart(counts) {
     const labels = Object.keys(counts);   
     const values = Object.values(counts); 
@@ -225,6 +287,7 @@ function fetchAndRenderAnalytics() {
     if (!hasLoadedAnalyticsOnce) {
         analyticsTotal.textContent = "Loading...";
         axisChartTotal.textContent = "Loading...";
+        mostPickedStatus.textContent = "Loading...";
     }
 
     fetch("https://script.google.com/macros/s/AKfycbxgPVlnRnsvvNW6fMPrgb2L88tlYQO6eah-YFTvoN3XYJX8Um0oXDRsfe1CpTTRKWMA/exec") 
@@ -239,6 +302,11 @@ function fetchAndRenderAnalytics() {
             renderAxisChart(axisCounts);
             axisChartTotal.textContent = "";
 
+            const questionTallies = tallyChoicesPerQuestion(deduped); 
+            const mostPicked = getMostPickedChoices(questionTallies);  
+            renderMostPicked(mostPicked);                             
+            mostPickedStatus.textContent = ""; 
+
             analyticsTotal.textContent = `${deduped.length} total submissions`;
             hasLoadedAnalyticsOnce = true;
         })
@@ -248,6 +316,7 @@ function fetchAndRenderAnalytics() {
             if (!hasLoadedAnalyticsOnce) {
                 analyticsTotal.textContent = "Unable to load results — retrying shortly...";
                 axisChartTotal.textContent = "Unable to load results — retrying shortly...";
+                mostPickedStatus.textContent = "Unable to load results — retrying shortly...";
             }
         });   
 }
