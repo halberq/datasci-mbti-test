@@ -40,6 +40,7 @@ let analyticsChart = null;
 let pollIntervalId = null;
 let previousPage = pageIntro;
 let axisChart = null;
+let hasLoadedAnalyticsOnce = false;
 
 
 function showPage(pageToShow) {
@@ -221,8 +222,10 @@ function renderAxisChart(axisCounts) {
 
 function fetchAndRenderAnalytics() {
 
-    analyticsTotal.textContent = "Loading...";
-    axisChartTotal.textContent = "Loading...";
+    if (!hasLoadedAnalyticsOnce) {
+        analyticsTotal.textContent = "Loading...";
+        axisChartTotal.textContent = "Loading...";
+    }
 
     fetch("https://script.google.com/macros/s/AKfycbxgPVlnRnsvvNW6fMPrgb2L88tlYQO6eah-YFTvoN3XYJX8Um0oXDRsfe1CpTTRKWMA/exec") 
         .then(response => response.json())
@@ -237,11 +240,15 @@ function fetchAndRenderAnalytics() {
             axisChartTotal.textContent = "";
 
             analyticsTotal.textContent = `${deduped.length} total submissions`;
+            hasLoadedAnalyticsOnce = true;
         })
 
         .catch(error => {
             console.error("Error fetching analytics:", error);
-            analyticsTotal.textContent = "Unable to load results — retrying shortly...";
+            if (!hasLoadedAnalyticsOnce) {
+                analyticsTotal.textContent = "Unable to load results — retrying shortly...";
+                axisChartTotal.textContent = "Unable to load results — retrying shortly...";
+            }
         });   
 }
 
