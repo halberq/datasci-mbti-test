@@ -22,6 +22,17 @@
 
         {
             "id": "q3",
+            "question": "During a group hackathon, you naturally gravitate toward...",
+            "key": "EI",
+            "choices": [
+                {"choice": "Rallying the team and talking through ideas out loud", "preference": "E"},
+                {"choice": "Diving straight into your own laptop to prototype quietly", "preference": "I"}
+            ]
+        },
+
+
+        {
+            "id": "q4",
             "question": "Given a messy dataset, your first instinct is to...",
             "key": "SN",
             "choices": [
@@ -31,7 +42,7 @@
         },
 
         {
-            "id": "q4",
+            "id": "q5",
             "question": "In a lecture on a new model architecture, you're most drawn to...",
             "key": "SN",
             "choices": [
@@ -39,9 +50,19 @@
                 {"choice": "The bigger idea it borrows from and where else it could apply", "preference": "N"}
             ]
         },
+        
+        {
+            "id": "q16",
+            "question": "When learning a new Python library, you first...",
+            "key": "SN",
+            "choices": [
+                {"choice": "Read the documentation start to finish, testing each function as you go", "preference": "S"},
+                {"choice": "Skim a few examples to grasp the overall idea, then improvise from there", "preference": "N"}
+            ]
+        },
 
         {
-            "id": "q5",
+            "id": "q7",
             "question": "Your teammate's approach to the project is inefficient. You...",
             "key": "TF",
             "choices": [
@@ -51,7 +72,7 @@
         },
 
         {
-            "id": "q6",
+            "id": "q8",
             "question": "When picking a project topic for the team, you weigh...",
             "key": "TF",
             "choices": [
@@ -61,7 +82,17 @@
         },
 
         {
-            "id": "q7",
+            "id": "q9",
+            "question": "A groupmate submits work with a flawed methodology days before the deadline. You...",
+            "key": "TF",
+            "choices": [
+                {"choice": "Flag the error directly and explain the correct approach", "preference": "T"},
+                {"choice": "Consider how stressed they must be and find a gentle way to bring it up", "preference": "F"}
+            ]
+        },
+
+        {
+            "id": "q10",
             "question": "Two weeks before a deadline, your notebook looks like....",
             "key": "JP",
             "choices": [
@@ -71,12 +102,22 @@
         },
 
         {
-            "id": "q8",
+            "id": "q11",
             "question": "Your ideal way to explore a new dataset is to...",
             "key": "JP",
             "choices": [
                 {"choice": "Follow a structured EDA checklist top to bottom", "preference": "J"},
                 {"choice": "Poke around wherever looks interesting first", "preference": "P"}
+            ]
+        }
+
+        {
+            "id": "q12",
+            "question": "The night before a paper's deadline, you're...",
+            "key": "JP",
+            "choices": [
+                {"choice": "Already done, just proofreading", "preference": "J"},
+                {"choice": "Still restructuring the whole outline because a better idea just hit you", "preference": "P"}
             ]
         }
     ]
