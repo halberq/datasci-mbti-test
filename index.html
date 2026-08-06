@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="client/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;1,700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;1,700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Whats your MBTI?</title>
 </head>
 <body>
@@ -67,7 +66,16 @@
     
     <h3>Most Picked Answers</h3>
     <p id="most-picked-status"></p>
-    <div id="most-picked-container"></div>
+    <div class="carousel-card">
+        <button id="most-picked-prev" class="carousel-arrow" aria-label="Previous question">‹</button>
+        <div class="carousel-content">
+            <p id="most-picked-question" class="carousel-question"></p>
+            <p id="most-picked-answer" class="carousel-answer"></p>
+            <p id="most-picked-count" class="carousel-count"></p>
+        </div>
+        <button id="most-picked-next" class="carousel-arrow" aria-label="Next question">›</button>
+    </div>
+    <p id="most-picked-position" class="carousel-position"></p>
 </section>
 
 <script src="client/script.js"></script>

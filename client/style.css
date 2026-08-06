@@ -3,37 +3,94 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-    --primary: #ffffff;
-    --light:   #f6efef;
-    --pill:    999px;
+    --bg: #0a0a14;              
+    --bg-elevated: #151225;    
+    --bg-elevated-hover: #1c1832; 
+    --purple: #9b5de5;
+    --blue: #4d7cfe;
+    --pink: #f15bb5;
+    --text: #f2eefb;            
+    --text-muted: #a89fc2;      
+    --border: rgba(155, 93, 229, 0.25); 
+    --gradient: linear-gradient(135deg, var(--purple), var(--blue) 50%, var(--pink));
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    font-family: 'Inter', sans-serif;
-    background: #dcd7d7;
+     background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif; 
     min-height: 100vh;
+    overflow-x: hidden; 
+    position: relative;
 }
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0; 
+    background:
+        radial-gradient(circle at 15% 20%, rgba(155, 93, 229, 0.15), transparent 35%),
+        radial-gradient(circle at 85% 15%, rgba(77, 124, 254, 0.12), transparent 35%),
+        radial-gradient(circle at 50% 90%, rgba(241, 91, 181, 0.10), transparent 40%);
+    pointer-events: none; 
+    z-index: 0;
+}
+
+h1, h2, h3 {
+    font-family: 'Space Grotesk', sans-serif; 
+    font-weight: 700;
+    letter-spacing: -0.02em; 
+}
+
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; } 
+
+
 
 /* ── HEADER ── */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 40px;
-    background: linear-gradient(to right, #bda6a6 0%, #d0f8f8 20%, var(--primary) 100%);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 10px rgba(0,180,180,0.1);
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
 }
 
 .logo-image { height: 55px; width: auto; }
 
 nav {
+    display: flex;
+    gap: 0.5rem;
     background: var(--white);
     border-radius: var(--pill);
     box-shadow: 0 3px 12px rgba(0,0,0,0.1);
     padding: 6px 10px;
+}
+
+nav button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 0.5rem 1.25rem;
+    border-radius: 999px; 
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+nav button:hover {
+    color: var(--text);
+    border-color: var(--purple);
 }
 
 .nav-links { list-style: none; display: flex; gap: 4px; }
@@ -119,143 +176,186 @@ nav {
 .badge.good { background: #d4f7e0; color: #1a7a40; }
 .badge.warn { background: #fdecc8; color: #a06000; }
 
-/* ── CHART ── */
-.chart-wrap {
+/* ---- PAGE SECTIONS ---- */
+.page {
+    display: none; 
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
     position: relative;
-    width: 100%;
-    height: 220px;
+    z-index: 1;
+    animation: fadeIn 0.4s ease; 
 }
 
-/* ── DASHBOARD ── */
-.dash-layout {
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    gap: 32px;
-    align-items: start;
+.page.active {
+    display: block;
 }
 
-.tagline h1 {
-    font-size: 2.5rem;
-    font-weight: 400;
-    line-height: 1.25;
-    color: var(--teal);
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.tagline .highlight {
+/* ---- BUTTONS ---- */
+button.primary, #start-btn, #restart-btn, #username-confirm-btn {
+    background: var(--gradient); /* the signature gradient shows up here, on the main call-to-action */
+    color: var(--bg); /* dark text on the bright gradient for contrast */
+    border: none;
+    padding: 0.85rem 2rem;
+    border-radius: 999px;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
-    font-style: italic;
-    color: var(--heading);
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.tagline-stats {
-    margin-top: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+button.primary:hover, #start-btn:hover, #restart-btn:hover, #username-confirm-btn:hover {
+    transform: translateY(-2px); /* subtle lift on hover, cheap but effective feedback */
+    box-shadow: 0 8px 24px rgba(155, 93, 229, 0.35);
 }
 
-.stat-pill {
+/* ---- USERNAME INPUT ---- */
+#username-input {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.85rem 1.25rem;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+#username-input:focus {
+    outline: none;
+    border-color: var(--purple); 
+}
+
+/* ---- QUIZ PAGE ---- */
+#question-progress {
+    font-family: 'JetBrains Mono', monospace; /* numeric/data elements get the mono face, per the type plan */
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+
+#question-text {
+    margin: 1rem 0 2rem;
+}
+
+.choice-btn {
+    display: block;
+    width: 100%;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--purple); /* accent bar, reinforces the gradient theme without overusing it */
+    color: var(--text);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    border-radius: 10px;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.15s ease, border-left-color 0.15s ease;
+}
+
+.choice-btn:hover {
+    background: var(--bg-elevated-hover);
+    border-left-color: var(--pink); /* accent shifts along the gradient on hover — small, deliberate detail */
+}
+
+/* ---- RESULT PAGE ---- */
+#result-message {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.4rem;
+    line-height: 1.5;
+}
+
+/* ---- ANALYTICS PAGE ---- */
+#page-analytics {
+    max-width: 720px; /* slightly wider than other pages, since charts need more room */
+}
+
+#analytics-total {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--purple);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+canvas {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+/* ---- MOST PICKED CAROUSEL ---- */
+.carousel-card {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: var(--white);
-    border-radius: var(--pill);
-    padding: 8px 16px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--teal);
-    box-shadow: 0 2px 8px rgba(0,180,180,0.1);
+    gap: 1rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
 }
 
-.pulse { color: var(--primary); animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-.dash-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: 18px;
+.carousel-arrow {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%; /* circular arrow buttons */
+    font-size: 1.25rem;
+    cursor: pointer;
+    flex-shrink: 0; /* prevents the arrows from getting squeezed if question text is long */
+    transition: border-color 0.15s ease, color 0.15s ease;
 }
 
-.span2 { grid-column: 1 / span 2; }
-
-/* ── CROWD METER ── */
-.crowd-meter { display: flex; flex-direction: column; gap: 6px; }
-
-.meter-bar {
-    height: 10px;
-    background: #e0f0f4;
-    border-radius: var(--pill);
-    overflow: hidden;
+.carousel-arrow:hover {
+    border-color: var(--purple);
+    color: var(--purple);
 }
 
-.meter-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: var(--pill);
-    transition: width 1s ease, background 1s ease;
-    background: var(--low);
-}
-
-.meter-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.7rem;
-    color: var(--teal);
-    opacity: 0.7;
-}
-
-.crowd-value {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--heading);
-}
-
-.crowd-value.large { font-size: 2.4rem; }
-
-.advisory-text {
-    font-size: 0.88rem;
-    color: var(--teal);
-    line-height: 1.6;
-    background: var(--light);
-    border-radius: 12px;
-    padding: 12px 16px;
-}
-
-/* ── CROWD STATUS PAGE ── */
-.crowd-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: 18px;
-}
-
-.range-display {
-    display: flex;
-    gap: 12px;
-}
-
-.range-item {
-    flex: 1;
-    border-radius: 12px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+.carousel-content {
+    flex: 1; /* takes up remaining space between the two arrow buttons */
     text-align: center;
 }
 
-.range-item.low  { background: #d4f7e0; }
-.range-item.mid  { background: #fdecc8; }
-.range-item.high { background: #fde0e0; }
+.carousel-question {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+}
 
-.range-label { font-size: 0.72rem; font-weight: 700; color: var(--heading); opacity: 0.7; }
-.range-val   { font-size: 1.2rem; font-weight: 700; color: var(--heading); }
+.carousel-answer {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    background: var(--gradient); /* gradient text — the "winning answer" gets the signature treatment */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
 
-/* ── TERMINAL PAGE ── */
-.terminal-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: 18px;
+.carousel-count {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.carousel-position {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
 }

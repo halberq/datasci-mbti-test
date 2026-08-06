@@ -37,11 +37,22 @@ const analyticsTotal = document.getElementById("analytics-total");
 const axisChartTotal = document.getElementById("axis-chart-total");
 const mostPickedStatus = document.getElementById("most-picked-status");
 
+// Most Picked elements
+const mostPickedQuestion = document.getElementById("most-picked-question");
+const mostPickedAnswer = document.getElementById("most-picked-answer");
+const mostPickedCount = document.getElementById("most-picked-count");
+const mostPickedPosition = document.getElementById("most-picked-position");
+const mostPickedPrevBtn = document.getElementById("most-picked-prev");
+const mostPickedNextBtn = document.getElementById("most-picked-next");
+
+
 let analyticsChart = null; 
 let pollIntervalId = null;
 let previousPage = pageIntro;
 let axisChart = null;
 let hasLoadedAnalyticsOnce = false;
+let mostPickedResults = []; 
+let mostPickedIndex = 0; 
 
 
 function showPage(pageToShow) {
@@ -220,14 +231,23 @@ function getMostPickedChoices(questionTallies) {
 }
 
 function renderMostPicked(results) {
-    const container = document.getElementById("most-picked-container");
-    container.innerHTML = ""; 
+    mostPickedResults = results; 
 
-    results.forEach(result => {
-        const item = document.createElement("p"); 
-        item.textContent = `${result.questionText} → "${result.mostPickedText}" (${result.count}/${result.totalVotes})`;
-        container.appendChild(item);
-    });
+    if (mostPickedIndex >= mostPickedResults.length) {
+        mostPickedIndex = 0;
+    }
+
+    renderMostPickedCard(); 
+}
+
+function renderMostPickedCard() {
+    if (mostPickedResults.length === 0) return; 
+
+    const current = mostPickedResults[mostPickedIndex];
+    mostPickedQuestion.textContent = current.questionText;
+    mostPickedAnswer.textContent = `"${current.mostPickedText}"`;
+    mostPickedCount.textContent = `${current.count} of ${current.totalVotes} picked this`;
+    mostPickedPosition.textContent = `${mostPickedIndex + 1} / ${mostPickedResults.length}`; 
 }
 
 function renderChart(counts) {
@@ -385,6 +405,16 @@ navAnalyticsBtn.addEventListener("click", () => {
 navQuizBtn.addEventListener("click", () => {
     stopPolling(); 
     showPage(previousPage);
+});
+
+mostPickedPrevBtn.addEventListener("click", () => {
+    mostPickedIndex = (mostPickedIndex - 1 + mostPickedResults.length) % mostPickedResults.length;
+    renderMostPickedCard();
+});
+
+mostPickedNextBtn.addEventListener("click", () => {
+    mostPickedIndex = (mostPickedIndex + 1) % mostPickedResults.length; 
+    renderMostPickedCard();
 });
 
 loadQuestions();
