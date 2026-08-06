@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;1,700&display=swap');
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
@@ -13,12 +11,6 @@
     --text-muted: #a89fc2;      
     --border: rgba(155, 93, 229, 0.25); 
     --gradient: linear-gradient(135deg, var(--purple), var(--blue) 50%, var(--pink));
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 
 body {
@@ -54,7 +46,7 @@ h3 { font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; let
 
 
 
-/* ── HEADER ── */
+/*HEADER*/
 header {
     display: flex;
     justify-content: space-between;
@@ -70,10 +62,6 @@ header {
 nav {
     display: flex;
     gap: 0.5rem;
-    background: var(--white);
-    border-radius: var(--pill);
-    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-    padding: 6px 10px;
 }
 
 nav button {
@@ -93,90 +81,7 @@ nav button:hover {
     border-color: var(--purple);
 }
 
-.nav-links { list-style: none; display: flex; gap: 4px; }
-
-.nav-links a {
-    display: block;
-    text-decoration: none;
-    color: var(--teal);
-    font-weight: 700;
-    font-size: 0.92rem;
-    padding: 9px 20px;
-    border-radius: var(--pill);
-    transition: background 0.2s;
-    white-space: nowrap;
-    cursor: pointer;
-}
-
-.nav-links a:hover  { background: var(--light); }
-.nav-links a.active { background: var(--card); }
-
-.user-actions { display: flex; gap: 10px; }
-
-.icon-btn {
-    width: 48px; height: 48px;
-    background: var(--card);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; transition: background 0.2s;
-}
-.icon-btn:hover { background: var(--light); }
-.icon-btn i { font-size: 1.2rem; color: var(--teal); }
-
-/* ── PAGES ── */
-.page        { display: none; padding: 40px 56px; }
-.page.active { display: block; }
-
-/* ── SHARED CARD ── */
-.card {
-    background: var(--white);
-    border-radius: 20px;
-    padding: 24px 28px;
-    cursor: default;
-    transition: transform 0.2s, box-shadow 0.2s;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    box-shadow: 0 4px 16px rgba(0,180,180,0.08);
-}
-
-.card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 28px rgba(0,180,180,0.15);
-}
-
-.card-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-
-.card-icon {
-    width: 48px; height: 48px;
-    background: var(--card);
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-}
-.card-icon i { font-size: 1.3rem; color: var(--teal); }
-
-.card-label { font-weight: 700; font-size: 1rem; color: var(--heading); }
-.card-sub   { font-size: 0.8rem; color: var(--teal); opacity: 0.85; margin-top: 2px; }
-
-.badge {
-    margin-left: auto;
-    font-size: 0.7rem;
-    font-weight: 700;
-    background: var(--card);
-    color: var(--teal);
-    padding: 4px 12px;
-    border-radius: var(--pill);
-    white-space: nowrap;
-}
-.badge.good { background: #d4f7e0; color: #1a7a40; }
-.badge.warn { background: #fdecc8; color: #a06000; }
-
-/* ---- PAGE SECTIONS ---- */
+/*PAGE SECTIONS*/
 .page {
     display: none; 
     max-width: 640px;
@@ -196,10 +101,10 @@ nav button:hover {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ---- BUTTONS ---- */
+/*BUTTONS*/
 button.primary, #start-btn, #restart-btn, #username-confirm-btn {
-    background: var(--gradient); /* the signature gradient shows up here, on the main call-to-action */
-    color: var(--bg); /* dark text on the bright gradient for contrast */
+    background: var(--gradient); 
+    color: var(--bg); 
     border: none;
     padding: 0.85rem 2rem;
     border-radius: 999px;
@@ -212,11 +117,11 @@ button.primary, #start-btn, #restart-btn, #username-confirm-btn {
 }
 
 button.primary:hover, #start-btn:hover, #restart-btn:hover, #username-confirm-btn:hover {
-    transform: translateY(-2px); /* subtle lift on hover, cheap but effective feedback */
+    transform: translateY(-2px); 
     box-shadow: 0 8px 24px rgba(155, 93, 229, 0.35);
 }
 
-/* ---- USERNAME INPUT ---- */
+/*USERNAME INPUT*/
 #username-input {
     background: var(--bg-elevated);
     border: 1px solid var(--border);
@@ -234,9 +139,9 @@ button.primary:hover, #start-btn:hover, #restart-btn:hover, #username-confirm-bt
     border-color: var(--purple); 
 }
 
-/* ---- QUIZ PAGE ---- */
+/*QUIZ PAGE*/
 #question-progress {
-    font-family: 'JetBrains Mono', monospace; /* numeric/data elements get the mono face, per the type plan */
+    font-family: 'JetBrains Mono', monospace; 
     color: var(--text-muted);
     font-size: 0.85rem;
     letter-spacing: 0.05em;
@@ -251,7 +156,7 @@ button.primary:hover, #start-btn:hover, #restart-btn:hover, #username-confirm-bt
     width: 100%;
     background: var(--bg-elevated);
     border: 1px solid var(--border);
-    border-left: 3px solid var(--purple); /* accent bar, reinforces the gradient theme without overusing it */
+    border-left: 3px solid var(--purple); 
     color: var(--text);
     padding: 1rem 1.25rem;
     margin-bottom: 0.75rem;
@@ -265,22 +170,29 @@ button.primary:hover, #start-btn:hover, #restart-btn:hover, #username-confirm-bt
 
 .choice-btn:hover {
     background: var(--bg-elevated-hover);
-    border-left-color: var(--pink); /* accent shifts along the gradient on hover — small, deliberate detail */
+    border-left-color: var(--pink); 
 }
 
-/* ---- RESULT PAGE ---- */
+/*RESULT PAGE*/
 #result-message {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 1.4rem;
     line-height: 1.5;
 }
 
-/* ---- ANALYTICS PAGE ---- */
+/*ANALYTICS PAGE*/
 #page-analytics {
-    max-width: 720px; /* slightly wider than other pages, since charts need more room */
+    max-width: 720px; 
 }
 
 #analytics-total {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--purple);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+#axis-chart-total {
     font-family: 'JetBrains Mono', monospace;
     color: var(--purple);
     font-size: 1.1rem;
@@ -295,7 +207,7 @@ canvas {
     margin-bottom: 2.5rem;
 }
 
-/* ---- MOST PICKED CAROUSEL ---- */
+/*MOST PICKED CAROUSEL*/
 .carousel-card {
     display: flex;
     align-items: center;
@@ -312,10 +224,10 @@ canvas {
     color: var(--text);
     width: 2.5rem;
     height: 2.5rem;
-    border-radius: 50%; /* circular arrow buttons */
+    border-radius: 50%; 
     font-size: 1.25rem;
     cursor: pointer;
-    flex-shrink: 0; /* prevents the arrows from getting squeezed if question text is long */
+    flex-shrink: 0; 
     transition: border-color 0.15s ease, color 0.15s ease;
 }
 
@@ -325,7 +237,7 @@ canvas {
 }
 
 .carousel-content {
-    flex: 1; /* takes up remaining space between the two arrow buttons */
+    flex: 1; 
     text-align: center;
 }
 
@@ -339,7 +251,7 @@ canvas {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
     font-size: 1.15rem;
-    background: var(--gradient); /* gradient text — the "winning answer" gets the signature treatment */
+    background: var(--gradient); 
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

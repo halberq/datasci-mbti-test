@@ -1,3 +1,5 @@
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxgPVlnRnsvvNW6fMPrgb2L88tlYQO6eah-YFTvoN3XYJX8Um0oXDRsfe1CpTTRKWMA/exec";
+
 let questionsData = [];
 let currentIndex = 0;
 let userAnswers = {};
@@ -27,7 +29,6 @@ const restartBtn = document.getElementById("restart-btn");
 
 // Result elements
 const resultType = document.getElementById("result-type");
-const resultBtn = document.getElementById("result-btn");
 
 // Analytics elements
 const navQuizBtn = document.getElementById("nav-quiz-btn");
@@ -45,7 +46,6 @@ const mostPickedPosition = document.getElementById("most-picked-position");
 const mostPickedPrevBtn = document.getElementById("most-picked-prev");
 const mostPickedNextBtn = document.getElementById("most-picked-next");
 
-
 let analyticsChart = null; 
 let pollIntervalId = null;
 let previousPage = pageIntro;
@@ -53,7 +53,6 @@ let axisChart = null;
 let hasLoadedAnalyticsOnce = false;
 let mostPickedResults = []; 
 let mostPickedIndex = 0; 
-
 
 function showPage(pageToShow) {
     [pageUsername, pageIntro, pageQuiz, pageResult, pageAnalytics].forEach(page => page.classList.remove("active"));
@@ -82,10 +81,6 @@ function renderQuestion() {
         choiceBtn.classList.add("choice-btn");
         choiceBtn.addEventListener("click", () => selectAnswer(currentQuestion.id, choice.preference));
         choicesContainer.appendChild(choiceBtn);
-
-        choicesContainer.style.display = "flex";
-        choicesContainer.style.flexDirection = "column";
-        choicesContainer.style.gap = "10px";
     });
 }
 
@@ -130,11 +125,6 @@ function sendToGoogleSheets(sessionData) {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(sessionData)
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Data sent to Google Sheets:", data);
-    })
-    .catch(error => console.error("Error sending data to Google Sheets:", error));
 }
 
 function getDedupedRows(rows) {
@@ -160,8 +150,6 @@ function tallyTypes(dedupedRows) {
 }
 
 function tallyAxes(dedupedRows) {
-    // pre-build the structure so every letter starts at 0, even if nobody picked it yet —
-    // avoids "undefined" gaps in the chart if, say, zero people are type "P" so far
     const axisCounts = {
         EI: { E: 0, I: 0 },
         SN: { S: 0, N: 0 },
@@ -354,7 +342,7 @@ function stopPolling() {
 usernameConfirmBtn.addEventListener("click", () => {
     const enteredUsername = usernameInput.value.trim();
 
-    if (enteredUsername == "") {
+    if (enteredUsername === "") {
         alert("Please enter your name to continue.");
         return;
     }
@@ -367,12 +355,6 @@ usernameConfirmBtn.addEventListener("click", () => {
 startBtn.addEventListener("click", () => {
     showPage(pageQuiz);
     renderQuestion();
-});
-
-restartBtn.addEventListener("click", () => {
-    currentIndex = 0;
-    userAnswers = {};
-    showPage(pageIntro);
 });
 
 restartBtn.addEventListener("click", () => {
