@@ -16,7 +16,7 @@
 body {
      background-color: var(--bg);
     color: var(--text);
-    font-family: 'Inter', sans-serif; 
+    font-family: 'Acronym', Helvetica, Arial, sans-serif; 
     min-height: 100vh;
     overflow-x: hidden; 
     position: relative;
@@ -35,7 +35,7 @@ body::before {
 }
 
 h1, h2, h3 {
-    font-family: 'Space Grotesk', sans-serif; 
+    font-family: 'Acronym', Helvetica, Arial, sans-serif; 
     font-weight: 700;
     letter-spacing: -0.02em; 
 }
@@ -70,7 +70,7 @@ nav button {
     color: var(--text-muted);
     padding: 0.5rem 1.25rem;
     border-radius: 999px; 
-    font-family: 'Inter', sans-serif;
+    font-family: 'Acronym', Helvetica, Arial, sans-serif;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -108,7 +108,7 @@ button.primary, #start-btn, #restart-btn, #username-confirm-btn {
     border: none;
     padding: 0.85rem 2rem;
     border-radius: 999px;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Acronym', Helvetica, Arial, sans-serif;
     font-weight: 700;
     font-size: 1rem;
     cursor: pointer;
@@ -128,7 +128,7 @@ button.primary:hover, #start-btn:hover, #restart-btn:hover, #username-confirm-bt
     color: var(--text);
     padding: 0.85rem 1.25rem;
     border-radius: 12px;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Acronym', Helvetica, Arial, sans-serif;
     font-size: 1rem;
     width: 100%;
     margin-top: 1rem;
@@ -141,7 +141,7 @@ button.primary:hover, #start-btn:hover, #restart-btn:hover, #username-confirm-bt
 
 /*QUIZ PAGE*/
 #question-progress {
-    font-family: 'JetBrains Mono', monospace; 
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
     color: var(--text-muted);
     font-size: 0.85rem;
     letter-spacing: 0.05em;
@@ -162,7 +162,7 @@ button.primary:hover, #start-btn:hover, #restart-btn:hover, #username-confirm-bt
     margin-bottom: 0.75rem;
     border-radius: 10px;
     text-align: left;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Acronym', Helvetica, Arial, sans-serif;
     font-size: 0.95rem;
     cursor: pointer;
     transition: background 0.15s ease, border-left-color 0.15s ease;
@@ -175,7 +175,7 @@ button.primary:hover, #start-btn:hover, #restart-btn:hover, #username-confirm-bt
 
 /*RESULT PAGE*/
 #result-message {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 1.4rem;
     line-height: 1.5;
 }
@@ -186,14 +186,14 @@ button.primary:hover, #start-btn:hover, #restart-btn:hover, #username-confirm-bt
 }
 
 #analytics-total {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: var(--purple);
     font-size: 1.1rem;
     margin-bottom: 2rem;
 }
 
 #axis-chart-total {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: var(--purple);
     font-size: 1.1rem;
     margin-bottom: 2rem;
@@ -248,7 +248,7 @@ canvas {
 }
 
 .carousel-answer {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 700;
     font-size: 1.15rem;
     background: var(--gradient); 
@@ -258,7 +258,7 @@ canvas {
 }
 
 .carousel-count {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: var(--text-muted);
     font-size: 0.8rem;
     margin-top: 0.5rem;
@@ -266,7 +266,7 @@ canvas {
 
 .carousel-position {
     text-align: center;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: var(--text-muted);
     font-size: 0.8rem;
     margin-top: 0.75rem;
