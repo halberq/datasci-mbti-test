@@ -1,128 +1,180 @@
 {
-    "questions": [
-        {
-            "id": "q1",
-            "question": "You are locked out of your dorm. What do you do?",
-            "key": "EI",
-            "choices": [
-                {"choice": "Join a group project chat and start throwing out ideas","preference": "E"},
-                {"choice": "Read through the syllabus twice before saying anything","preference": "I"}
-            ]
-        },
-
-        {
-            "id": "q2",
-            "question": "You just solved a tricky bug in your code. What now?",
-            "key": "EI",
-            "choices": [
-                {"choice": "Tell everyone in the group chat immediately", "preference": "E"},
-                {"choice": "Quietly commit it and move on to the next problem", "preference": "I"}
-            ]
-        },
-
-        {
-            "id": "q3",
-            "question": "During a group hackathon, you naturally gravitate toward...",
-            "key": "EI",
-            "choices": [
-                {"choice": "Rallying the team and talking through ideas out loud", "preference": "E"},
-                {"choice": "Diving straight into your own laptop to prototype quietly", "preference": "I"}
-            ]
-        },
-
-
-        {
-            "id": "q4",
-            "question": "Given a messy dataset, your first instinct is to...",
-            "key": "SN",
-            "choices": [
-                {"choice": "Check column types, nulls, and ranges row by row", "preference": "S"},
-                {"choice": "Picture the whole pipeline and where this fits in it", "preference": "N"}
-            ]
-        },
-
-        {
-            "id": "q5",
-            "question": "In a lecture on a new model architecture, you're most drawn to...",
-            "key": "SN",
-            "choices": [
-                {"choice": "The exact formulas and implementation details", "preference": "S"},
-                {"choice": "The bigger idea it borrows from and where else it could apply", "preference": "N"}
-            ]
-        },
-        
-        {
-            "id": "q16",
-            "question": "When learning a new Python library, you first...",
-            "key": "SN",
-            "choices": [
-                {"choice": "Read the documentation start to finish, testing each function as you go", "preference": "S"},
-                {"choice": "Skim a few examples to grasp the overall idea, then improvise from there", "preference": "N"}
-            ]
-        },
-
-        {
-            "id": "q7",
-            "question": "Your teammate's approach to the project is inefficient. You...",
-            "key": "TF",
-            "choices": [
-                {"choice": "Point out the flaw directly so it gets fixed", "preference": "T"},
-                {"choice": "Ease into it, framing it as a suggestion", "preference": "F"}
-            ]
-        },
-
-        {
-            "id": "q8",
-            "question": "When picking a project topic for the team, you weigh...",
-            "key": "TF",
-            "choices": [
-                {"choice": "Which idea is technically the most interesting", "preference": "T"},
-                {"choice": "Which idea the whole team will enjoy working on", "preference": "F"}
-            ]
-        },
-
-        {
-            "id": "q9",
-            "question": "A groupmate submits work with a flawed methodology days before the deadline. You...",
-            "key": "TF",
-            "choices": [
-                {"choice": "Flag the error directly and explain the correct approach", "preference": "T"},
-                {"choice": "Consider how stressed they must be and find a gentle way to bring it up", "preference": "F"}
-            ]
-        },
-
-        {
-            "id": "q10",
-            "question": "Two weeks before a deadline, your notebook looks like....",
-            "key": "JP",
-            "choices": [
-                {"choice": "A clear plan with milestones already checked off", "preference": "J"},
-                {"choice": "A dozen open tabs and experiments in progress", "preference": "P"}
-            ]
-        },
-
-        {
-            "id": "q11",
-            "question": "Your ideal way to explore a new dataset is to...",
-            "key": "JP",
-            "choices": [
-                {"choice": "Follow a structured EDA checklist top to bottom", "preference": "J"},
-                {"choice": "Poke around wherever looks interesting first", "preference": "P"}
-            ]
-        },
-
-        {
-            "id": "q12",
-            "question": "The night before a paper's deadline, you're...",
-            "key": "JP",
-            "choices": [
-                {"choice": "Already done, just proofreading", "preference": "J"},
-                {"choice": "Still restructuring the whole outline because a better idea just hit you", "preference": "P"}
-            ]
-        }
-    ]
+  "questions": [
+    {
+      "id": "q1",
+      "question": "You are locked out of your dorm. What do you do?",
+      "key": "EI",
+      "choices": [
+        {"choice": "Break in", "preference": 1},
+        {"choice": "Sleep outside", "preference": 2},
+        {"choice": "Find a coffee shop and stay there till morning", "preference": 3},
+        {"choice": "Call the landlord", "preference": 4}
+      ]
+    },
+    {
+      "id": "q2",
+      "question": "Who is your favorite national hero?",
+      "key": "EI",
+      "choices": [
+        {"choice": "Jose Rizal", "preference": 1},
+        {"choice": "Andres Bonifacio", "preference": 2},
+        {"choice": "Rodrigo Roa Duterte", "preference": 3},
+        {"choice": "Rene Baterbonia", "preference": 4}
+      ]
+    },
+    {
+      "id": "q3",
+      "question": "Your professor says you can cheat during the exam, as long as you aren't caught. What do you do?",
+      "key": "EI",
+      "choices": [
+        {"choice": "Bring your own cheatsheet", "preference": 1},
+        {"choice": "Sit next to the smart kid and glance at their answers", "preference": 2},
+        {"choice": "Answer the exam without cheating", "preference": 3},
+        {"choice": "Blatantly open your phone and ask ChatGPT for answers", "preference": 4}
+      ]
+    },
+    {
+      "id": "q4",
+      "question": "You notice a flaw in your friend’s research presentation, and the professor says that anyone who voluntarily asks a question after each presentation gets 10 points to their score. What do you do?",
+      "key": "EI",
+      "choices": [
+        {"choice": "You stay silent", "preference": 1},
+        {"choice": "You ask a question, but refrain from asking about the flaw", "preference": 2},
+        {"choice": "You point out the flaw and get the 10 points, but your friend gets a low score for their research", "preference": 3},
+        {"choice": "You weren’t paying attention during the presentation", "preference": 4}
+      ]
+    },
+    {
+      "id": "q5",
+      "question": "Your class got cancelled because the professor didn’t show up. How are you going to spend your free time?",
+      "key": "SN",
+      "choices": [
+        {"choice": "Study the supposed class’ topic yourself", "preference": 1},
+        {"choice": "Go back to your dorm to sleep", "preference": 2},
+        {"choice": "Explore the campus for niche spots", "preference": 3},
+        {"choice": "Go to SM instead to have fun", "preference": 4}
+      ]
+    },
+    {
+      "id": "q6",
+      "question": "Your teammate's approach to making their part for the research project is inefficient. You…",
+      "key": "SN",
+      "choices": [
+        {"choice": "Point it out directly, so that you can finish the research faster", "preference": 1},
+        {"choice": "Suggest an alternative method that's faster", "preference": 2},
+        {"choice": "Do all the work yourself", "preference": 3},
+        {"choice": "Help them with their part to make the process faster", "preference": 4}
+      ]
+    },
+    {
+      "id": "q7",
+      "question": "You’re pulling an all-nighter to study for your exam tomorrow. What is your drink of choice?",
+      "key": "SN",
+      "choices": [
+        {"choice": "Coffee", "preference": 1},
+        {"choice": "Sting", "preference": 2},
+        {"choice": "Water", "preference": 3},
+        {"choice": "Energy drink", "preference": 4}
+      ]
+    },
+    {
+      "id": "q8",
+      "question": "Who is your favorite Data Scientist?",
+      "key": "SN",
+      "choices": [
+        {"choice": "Aubrey Graham", "preference": 1},
+        {"choice": "Darren Watkins Jr.", "preference": 2},
+        {"choice": "Andrej Kaparthy", "preference": 3},
+        {"choice": "Francis Kollin Morales", "preference": 4}
+      ]
+    },
+    {
+      "id": "q9",
+      "question": "Are you willing to join CODEx next semester?",
+      "key": "TF",
+      "choices": [
+        {"choice": "Yes", "preference": 1},
+        {"choice": "Yes", "preference": 2},
+        {"choice": "SUPER Yes", "preference": 3},
+        {"choice": "Click here for Non-DS (sadly bawal mo sa CODEx)", "preference": 4}
+      ]
+    },
+    {
+      "id": "q10",
+      "question": "What is your favorite thing about PAX Silica",
+      "key": "TF",
+      "choices": [
+        {"choice": "Economic Development", "preference": 1},
+        {"choice": "Yummy carcinogenic water", "preference": 2},
+        {"choice": "Tinnitus", "preference": 3},
+        {"choice": "Fuck dem sea turtles", "preference": 4}
+      ]
+    },
+    {
+      "id": "q11",
+      "question": "You’re walking down the hall — briskly, swiftly. But you're not late to anything, no. You have nowhere to go, nowhere to be. You bounce from room to room doing, enjoying, learning nothing.\nYou walk fast to get nothing done faster. You do nothing, eat, sleep, repeat.\n\nBut then, as the daily monotony continues to numb your mind, something — someONE crashes into you. And you start to see... nothing — you see nothing, but them. You feel nothing but the warmth of their skin. You hear nothing but the symphony of their voice: “Hala.” The numbness, ones so ingrained into your very being, was reduced to nothing, nothing but a scent — a familiar scent. People have told you that you underestimate yourself because you genuinely believe that you know nothing, but somehow... you know them. And as you look into the nothingness in their eyes, you can see that they know you \n\nAs you slowly guide each other and regain balance, you both pause and let silence fall. What do you say?",
+      "key": "TF",
+      "choices": [
+        {"choice": "BOMBOCLAT!!!!", "preference": 1},
+        {"choice": "d = √ ((a_2 - a_1)^2 + (b_2 - b_1)^2 +...+ (p_2 - p_1)^2)", "preference": 2},
+        {"choice": "The history of all hitherto societies is the history of class struggle", "preference": 3},
+        {"choice": "*attempts backflip", "preference": 4}
+      ]
+    },
+    {
+      "id": "q12",
+      "question": "Your laptop battery is at 3%, and you still have class. What do you do?",
+      "key": "TF",
+      "choices": [
+        {"choice": "hunt for nearest outlet like it’s a survival mission", "preference": 1},
+        {"choice": "lower brightness and pray", "preference": 2},
+        {"choice": "ask a classmate if you can borrow a charger", "preference": 3},
+        {"choice": "close the laptop and say “mental notes na lang”", "preference": 4}
+      ]
+    },
+    {
+      "id": "q13",
+      "question": "Your professor suddenly asks the class a question, and nobody is answering. What do you do?",
+      "key": "JP",
+      "choices": [
+        {"choice": "avoid eye contact at all costs", "preference": 1},
+        {"choice": "whisper the answer to your seatmate", "preference": 2},
+        {"choice": "raise your hand even if you’re only 60% sure", "preference": 3},
+        {"choice": "open your notes dramatically and pretend to be busy", "preference": 4}
+      ]
+    },
+    {
+      "id": "q14",
+      "question": "What’s your campus survival item?",
+      "key": "JP",
+      "choices": [
+        {"choice": "water bottle", "preference": 1},
+        {"choice": "portable electric fan", "preference": 2},
+        {"choice": "umbrella", "preference": 3},
+        {"choice": "you don't bring anything at all and just wing it", "preference": 4}
+      ]
+    },
+    {
+      "id": "q15",
+      "question": "What would you name a kambing",
+      "key": "JP",
+      "choices": [
+        {"choice": "Carl Josef Eduardo", "preference": 1},
+        {"choice": "Franzo Sitchon", "preference": 2},
+        {"choice": "Intel Panther Lake Ultra 9 280K", "preference": 3},
+        {"choice": "brownie", "preference": 4}
+      ]
+    },
+    {
+      "id": "q16",
+      "question": "Kinsa imong kanding (goat) sa DS",
+      "key": "JP",
+      "choices": [
+        {"choice": "Jemina Jasin", "preference": 1},
+        {"choice": "Amado Vince Mendoza", "preference": 2},
+        {"choice": "Franz Sazon", "preference": 3},
+        {"choice": "Eli Lamzon", "preference": 4}
+      ]
+    }
+  ]
 }
-
-
-
- 
