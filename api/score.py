@@ -23,6 +23,33 @@ def score_answers(ans: dict):
 
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
+        try:
+            #Safely parse Content-Length header
+            content_length = int(self.headers.get('Content-Length') or self.headers.get('content-length') or 0)
+            
+            if content_length > 0:
+                raw_body = self.rfile.read(content_length)
+                data = json.loads(raw_body.decode('utf-8'))
+            else:
+                data = {}
+
+            answers = data.get("answers", {})
+            type_code = score_answers(answers)
+
+            #Return Success JSON
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({"type_code": type_code}).encode('utf-8'))
+
+        except Exception as e:
+            #Catch all backend errors and return JSON instead of HTML crash page
+            self.send_response(500)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            error_response = json.dumps({"error": str(e)})
+            self.wfile.write(error_response.encode('utf-8'))
+
         content_length = int(self.headers['Content-Length'])
         raw_body = self.rfile.read(content_length)
         data = json.loads(raw_body)
