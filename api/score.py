@@ -1,5 +1,7 @@
 from http.server import BaseHTTPRequestHandler
 import json 
+import pandas as pd
+import numpy as np
 
 PREFS = [ # List of Tuples containing each MBTI preference
     ("E", "I"), ("S", "N"), ("T", "F"), ("J", "P")
@@ -33,3 +35,42 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps({"type_code": type_code}).encode('utf-8'))
         return
+
+def csv_to_json(csv_file_path):
+    df = pd.read_csv(csv_file_path)
+    return df.to_dict(orient='records')
+
+def df_to_json(df):
+    return df.to_dict(orient='records')
+
+def populate_answers(input_list):
+    return {f"Q{i + 1}": [val] for i, val in enumerate(input_list)}
+
+def closest_node(answer_vector):
+    #load upclass data
+    df_up_class_data = pd.read_csv("data/mbti_dataset.csv")
+
+    #i-lahi ang asnwers sa mga upclass
+    df_up_class_answers = df_up_class_data.drop(columns=['Name'])
+
+    #get user answers
+    dic_answer = populate_answers(answer_vector)
+    df_user_answers = pd.DataFrame(dic_answer)
+
+    #calculate euclidean distances 
+    distances = np.linalg.norm(df_up_class_answers.values - df_user_answers.values, axis=1)
+
+    #store that shii
+    df_distannce = pd.DataFrame({'euclidean_distance': distances}, index=df_up_class_answers.index)
+
+    #attatch distance to main up-class data
+    df_up_class_data_with_distances = df_up_class_data.join(df_distannce, how='outer')
+
+    #sort the data by distance
+    df_up_class_data_with_distances.sort_values(by='euclidean_distance', inplace=True)
+
+    #output the thing
+    return (df_to_json(df_up_class_data_with_distances))
+
+    
+
