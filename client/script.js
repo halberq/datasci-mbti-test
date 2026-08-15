@@ -363,14 +363,37 @@ function stopPolling() {
     pollIntervalId = null;
 }
 
-function loadCelebs() {
-    fetch("celebs.json")
+function loadUpperclassmenData() {
+    fetch("test_csv.json")
         .then(response => response.json())
         .then(data => {
-            celebsData = data.people;
+            celebsData = data;
             renderClusters();
         })
-        .catch(error => console.error("Error loading celebrity data:", error));
+        .catch(error => console.error("Error loading CSV test data:", error));
+}
+
+            // Convert CSV rows into data vectors
+            celebsData = lines.slice(1).map(line => {
+                const values = line.split(",").map(v => v.trim());
+                const name = values[0];
+                const answers = {};
+
+                // Map Q1 through Q10 column values
+                for (let i = 1; i < headers.length; i++) {
+                    answers[headers[i]] = parseInt(values[i], 10) || 0;
+                }
+
+                return {
+                    Name: name,
+                    answers: answers,
+                    vector: values.slice(1).map(v => parseInt(v, 10) || 0)
+                };
+            });
+
+            renderClusters();
+        })
+        .catch(error => console.error("Error loading CSV test data:", error));
 }
 
 function renderClusters() {
@@ -535,10 +558,14 @@ function renderRadarClusterChart(clusterDataset) {
 }
 
 function getUserAnswerVector() {
-    // Extracts numeric choices (0 or 1) ordered by question key (e.g. q1, q2, ...)
     return Object.keys(userAnswers)
-        .sort()
-        .map(key => typeof userAnswers[key] === 'number' ? userAnswers[key] : (userAnswers[key] ? userAnswers[key].charCodeAt(0) % 2 : 0));
+        // Sort keys numerically (Q1, Q2, ..., Q10)
+        .sort((a, b) => {
+            const numA = parseInt(a.replace(/\D/g, ''), 10) || 0;
+            const numB = parseInt(b.replace(/\D/g, ''), 10) || 0;
+            return numA - numB;
+        })
+        .map(key => Number(userAnswers[key]) || 0);
 }
 
 function computeClosestNodes(userVector) {
@@ -643,4 +670,4 @@ mostPickedNextBtn.addEventListener("click", () => {
 });
 
 loadQuestions();
-loadCelebs();
+loadUpperclassmenData();
