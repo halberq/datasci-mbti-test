@@ -149,33 +149,6 @@ function getDedupedRows(rows) {
     return deduped;
 }
 
-function tallyTypes(dedupedRows) {
-    const counts = {}; 
-    dedupedRows.forEach(row => {
-        counts[row.type] = (counts[row.type] || 0) + 1;
-    });
-    return counts;
-}
-
-function tallyAxes(dedupedRows) {
-    const axisCounts = {
-        EI: { E: 0, I: 0 },
-        SN: { S: 0, N: 0 },
-        TF: { T: 0, F: 0 },
-        JP: { J: 0, P: 0 }
-    };
-
-    dedupedRows.forEach(row => {
-        const type = row.type; 
-        axisCounts.EI[type[0]]++; 
-        axisCounts.SN[type[1]]++;
-        axisCounts.TF[type[2]]++; 
-        axisCounts.JP[type[3]]++; 
-    });
-
-    return axisCounts;
-}
-
 function tallyChoicesPerQuestion(dedupedRows) {
     const questionTallies = {}; 
     dedupedRows.forEach(row => {
@@ -270,34 +243,6 @@ function renderChart(counts) {
     }
 }
 
-function renderAxisChart(axisCounts) {
-    const labels = ["E", "I", "S", "N", "T", "F", "J", "P"];
-    const values = [
-        axisCounts.EI.E, axisCounts.EI.I,
-        axisCounts.SN.S, axisCounts.SN.N,
-        axisCounts.TF.T, axisCounts.TF.F,
-        axisCounts.JP.J, axisCounts.JP.P
-    ];
-
-    if (axisChart) {
-        axisChart.data.datasets[0].data = values;
-        axisChart.update();
-    } else {
-        const ctx = document.getElementById("axis-chart").getContext("2d");
-        axisChart = new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: labels,
-                datasets: [{ label: "Number of participants", data: values }]
-            },
-            options: {
-                responsive: true,
-                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
-            }
-        });
-    }
-}
-
 function fetchAndRenderAnalytics() {
 
     if (!hasLoadedAnalyticsOnce) {
@@ -347,23 +292,6 @@ function stopPolling() {
     pollIntervalId = null;
 }
 
-function getGroupInfo(type) {
-    const ei = type[0], sn = type[1], tf = type[2], jp = type[3];
-
-    let group;
-    if (sn === "N" && tf === "T") group = "Analysts";
-    else if (sn === "N" && tf === "F") group = "Diplomats";
-    else if (sn === "S" && jp === "J") group = "Sentinels";
-    else group = "Explorers";
-
-    const x = ei === "E" ? 1 : 0;
-    const y = (group === "Analysts" || group === "Diplomats")
-        ? (jp === "J" ? 1 : 0)
-        : (tf === "T" ? 1 : 0);
-
-    return { group, x, y };
-}
-
 function loadCelebs() {
     fetch("celebs.json")
         .then(response => response.json())
@@ -374,89 +302,61 @@ function loadCelebs() {
         .catch(error => console.error("Error loading celebrity data:", error));
 }
 
-function getGroupInfo(type) {
-    const ei = type[0], sn = type[1], tf = type[2], jp = type[3];
-
-    let group;
-    if (sn === "N" && tf === "T") group = "analysts";
-    else if (sn === "N" && tf === "F") group = "diplomats";
-    else if (sn === "S" && jp === "J") group = "sentinels";
-    else group = "explorers";
-
-    const x = ei === "E" ? 1 : 0; // E/I is always the x-axis
-    const y = (group === "analysts" || group === "diplomats")
-        ? (jp === "J" ? 1 : 0)   // Analysts/Diplomats: J/P is the remaining free letter
-        : (tf === "T" ? 1 : 0);  // Sentinels/Explorers: T/F is the remaining free letter
-
-    return { group, x, y };
-}
-
 function renderClusters() {
-    const byType = {};
-    celebsData.forEach(person => {
-        if (!byType[person.type]) byType[person.type] = [];
-        byType[person.type].push(person);
+    const pointsContainer = document.getElementById("cluster-points");
+    if (!pointsContainer) return;
+    pointsContainer.innerHTML = "";
 
-     renderUserPin();
+    const clusterDistances = computeClusterDistances();
+
+    clusterDistances.forEach((person, index) => {
+        const circle = document.createElement("div");
+        circle.className = "person-circle";
+
+        const angle = (index / Math.max(clusterDistances.length, 1)) * 2 * Math.PI;
+        const radiusPercent = Math.min(person.distance * 12 + 15, 40); 
+        
+        const posX = 50 + radiusPercent * Math.cos(angle);
+        const posY = 50 + radiusPercent * Math.sin(angle);
+
+        circle.style.left = `${posX}%`;
+        circle.style.top = `${posY}%`;
+
+        const tooltip = document.createElement("div");
+        tooltip.className = "person-tooltip";
+        tooltip.innerHTML = `<strong>${person.label}</strong><br>Distance: ${person.distance}<br>${person.category ? person.category + '<br>' : ''}${person.bio || ""}`;
+        circle.appendChild(tooltip);
+
+        pointsContainer.appendChild(circle);
     });
 
-    document.querySelectorAll(".region-points").forEach(el => el.innerHTML = ""); 
-
-    Object.entries(byType).forEach(([type, people]) => {
-        const { group, x, y } = getGroupInfo(type);
-        const regionEl = document.querySelector(`#region-${group} .region-points`);
-
-        const baseXPercent = x === 1 ? 75 : 25;
-        const baseYPercent = y === 1 ? 25 : 75;
-
-        people.forEach((person, index) => {
-            const circle = document.createElement("div");
-            circle.className = "person-circle";
-
-            const spacingPx = 44;
-            const offsetPx = (index - (people.length - 1) / 2) * spacingPx;
-
-            circle.style.left = `calc(${baseXPercent}% + ${offsetPx}px)`;
-            circle.style.top = `${baseYPercent}%`;
-
-            const tooltip = document.createElement("div");
-            tooltip.className = "person-tooltip";
-            tooltip.innerHTML = `<strong>${person.name}</strong><br>${person.type} — ${person.category}<br>${person.bio}`;
-            circle.appendChild(tooltip);
-
-            regionEl.appendChild(circle);
-        });
-    });
+    renderUserPin();
+    renderRadarClusterChart(clusterDistances);
 }
 
 function renderUserPin() {
+    const pointsContainer = document.getElementById("cluster-points");
     const hint = document.getElementById("cluster-hint");
 
-    if (!finalType) {
-        
+    if (Object.keys(userAnswers).length === 0) {
         if (hint) hint.style.display = "block";
         return;
     }
     if (hint) hint.style.display = "none";
-
-    const { group, x, y } = getGroupInfo(finalType);
-    const regionEl = document.querySelector(`#region-${group} .region-points`);
-
-    const baseXPercent = x === 1 ? 75 : 25;
-    const baseYPercent = y === 1 ? 25 : 75;
+    if (!pointsContainer) return;
 
     const pin = document.createElement("div");
     pin.className = "person-circle user-pin"; 
 
-    pin.style.left = `calc(${baseXPercent}% + 26px)`;
-    pin.style.top = `${baseYPercent}%`;
+    pin.style.left = `50%`;
+    pin.style.top = `50%`;
 
     const tooltip = document.createElement("div");
     tooltip.className = "person-tooltip";
-    tooltip.innerHTML = `<strong>You (${username})</strong><br>${finalType}`;
+    tooltip.innerHTML = `<strong>You (${username || "User"})</strong><br>Origin (0.00)`;
     pin.appendChild(tooltip);
 
-    regionEl.appendChild(pin);
+    pointsContainer.appendChild(pin);
 }
 
 function calculateEuclideanDistance(vec1, vec2) {
@@ -480,28 +380,49 @@ function calculateEuclideanDistance(vec1, vec2) {
 function computeClusterDistances() {
     if (!celebsData || celebsData.length === 0) return [];
 
-    const datasetWithDistances = celebsData.map(person => {
-        // Fallback mockup vector matching user answers if missing in JSON
-        const personVector = person.answers || {};
-        const distance = calculateEuclideanDistance(userAnswers, personVector);
+    const userVector = getUserAnswerVector();
+
+    const datasetWithDistances = celebsData.map(item => {
+        let refVector = [];
+
+        if (item.answers) {
+            refVector = Object.keys(item.answers).sort().map(k => item.answers[k]);
+        } else if (Array.isArray(item.vector)) {
+            refVector = item.vector;
+        } else {
+            refVector = [];
+        }
+
+        let sumSq = 0;
+        const length = Math.max(userVector.length, refVector.length);
+        
+        for (let i = 0; i < length; i++) {
+            const uVal = userVector[i] !== undefined ? userVector[i] : 0;
+            const rVal = refVector[i] !== undefined ? refVector[i] : 0;
+            const diff = uVal - rVal;
+            sumSq += diff * diff;
+        }
+
+        const distance = Math.sqrt(sumSq);
 
         return {
-            label: person.name || person.type,
+            ...item,
+            label: item.Name || item.name || "Profile",
             distance: parseFloat(distance.toFixed(2))
         };
     });
 
-    // Sort closest to furthest
     datasetWithDistances.sort((a, b) => a.distance - b.distance);
     return datasetWithDistances;
 }
 
 function renderRadarClusterChart(clusterDataset) {
     const chartCanvas = document.getElementById("cluster-radar-chart");
-    if (!chartCanvas) return;
+    if (!chartCanvas || clusterDataset.length === 0) return;
 
-    const labels = clusterDataset.map(item => item.label);
-    const distances = clusterDataset.map(item => item.distance);
+    const topMatches = clusterDataset.slice(0, 8);
+    const labels = topMatches.map(item => item.label);
+    const distances = topMatches.map(item => item.distance);
 
     if (clusterRadarChart) {
         clusterRadarChart.data.labels = labels;
@@ -517,12 +438,12 @@ function renderRadarClusterChart(clusterDataset) {
                     label: "Euclidean Distance",
                     data: distances,
                     fill: true,
-                    backgroundColor: "rgba(75, 192, 192, 0.2)",
-                    borderColor: "rgba(75, 192, 192, 1)",
-                    pointBackgroundColor: "rgba(75, 192, 192, 1)",
+                    backgroundColor: "rgba(155, 93, 229, 0.2)",
+                    borderColor: "rgba(155, 93, 229, 1)",
+                    pointBackgroundColor: "rgba(241, 91, 181, 1)",
                     pointBorderColor: "#fff",
                     pointHoverBackgroundColor: "#fff",
-                    pointHoverBorderColor: "rgba(75, 192, 192, 1)"
+                    pointHoverBorderColor: "rgba(241, 91, 181, 1)"
                 }]
             },
             options: {
@@ -530,15 +451,60 @@ function renderRadarClusterChart(clusterDataset) {
                 maintainAspectRatio: false,
                 scales: {
                     r: {
-                        angleLines: { display: true },
-                        suggestedMin: 0,
-                        ticks: { stepSize: 1 }
+                        angleLines: { color: "rgba(155, 93, 229, 0.2)" },
+                        grid: { color: "rgba(155, 93, 229, 0.2)" },
+                        pointLabels: { color: "#a89fc2", font: { size: 12 } },
+                        ticks: { color: "#a89fc2", backdropColor: "transparent", stepSize: 1 },
+                        suggestedMin: 0
                     }
                 }
             }
         });
     }
 }
+
+function getUserAnswerVector() {
+    // Extracts numeric choices (0 or 1) ordered by question key (e.g. q1, q2, ...)
+    return Object.keys(userAnswers)
+        .sort()
+        .map(key => typeof userAnswers[key] === 'number' ? userAnswers[key] : (userAnswers[key] ? userAnswers[key].charCodeAt(0) % 2 : 0));
+}
+
+function computeClosestNodes(userVector) {
+    if (!celebsData || celebsData.length === 0) return [];
+
+    const datasetWithDistances = celebsData.map(item => {
+        // Extract reference answer vector from celeb/dataset object (Q1, Q2, ...)
+        const refVector = item.answers 
+            ? Object.keys(item.answers).sort().map(k => item.answers[k])
+            : [0, 0, 0, 0]; // Fallback mock vector
+
+        // Calculate Euclidean distance sum((u_i - r_i)^2)
+        let sumSq = 0;
+        const length = Math.max(userVector.length, refVector.length);
+        
+        for (let i = 0; i < length; i++) {
+            const uVal = userVector[i] !== undefined ? userVector[i] : 0;
+            const rVal = refVector[i] !== undefined ? refVector[i] : 0;
+            const diff = uVal - rVal;
+            sumSq += diff * diff;
+        }
+
+        const distance = Math.sqrt(sumSq);
+
+        return {
+            ...item,
+            label: item.Name || item.name || item.type,
+            distance: parseFloat(distance.toFixed(2))
+        };
+    });
+
+    // Sort by euclidean_distance ascending (closest match first)
+    datasetWithDistances.sort((a, b) => a.distance - b.distance);
+    return datasetWithDistances;
+}
+
+
 
 usernameConfirmBtn.addEventListener("click", () => {
     const enteredUsername = usernameInput.value.trim();
