@@ -56,7 +56,6 @@ let previousPage = pageIntro;
 let axisChart = null;
 let resultRadarChart = null;
 let clusterRadarChart = null;
-let analyticsChart = null;
 let hasLoadedAnalyticsOnce = false;
 let mostPickedResults = []; 
 let mostPickedIndex = 0; 
