@@ -39,18 +39,22 @@
 <!-- QUIZ PAGE -->
 <section class="page" id="page-quiz">
     <p id="question-progress"></p>
-    <h2 id="question-text">
-
-    </h2>
-    <div id ="choices-container">
-        
-    </div>
+    <h2 id="question-text"></h2>
+    <div id ="choices-container"></div>
 </section>
 
 <!-- RESULTS PAGE -->
 <section class="page" id="page-result">
     <h2 id="result-message"></h2>
-    <p id="result-type"></p>
+    <p id="result-summary">Here are the upperclassmen most similar to your responses:</p>
+    
+    <div class="radar-chart-card">
+        <h3>Upperclassman Match Proximity</h3>
+        <div class="radar-chart-container">
+            <canvas id="result-radar-chart"></canvas>
+        </div>
+    </div>
+
     <button id="restart-btn">Restart Quiz</button>
 </section>
 

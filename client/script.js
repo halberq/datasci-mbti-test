@@ -108,22 +108,30 @@ function submitAnswers() {
         body: JSON.stringify({ answers: userAnswers })
     })
     .then(response => response.json())
-    .then(data => {
-        finalType = data.type_code;
-        resultMessage.textContent = `${username}, your results show that your MBTI is ${finalType}!`;
-        resultType.textContent = data.type_code;
+    .then(() => {
+        resultMessage.textContent = `${username}, your profile vector is complete!`;
         showPage(pageResult);
 
+        const clusterDistances = computeClusterDistances();
+        renderResultRadarChart(clusterDistances);
         renderClusters();
 
         const sessionData = {
             username: username,
-            answers: userAnswers,
-            type: finalType
+            answers: userAnswers
         };
         sendToGoogleSheets(sessionData);
     })
-    .catch(error => console.error("Error submitting answers:", error));
+    .catch(error => {
+        console.error("Error submitting answers:", error);
+        // Render locally if backend API endpoint is offline
+        resultMessage.textContent = `${username}, your profile vector is complete!`;
+        showPage(pageResult);
+
+        const clusterDistances = computeClusterDistances();
+        renderResultRadarChart(clusterDistances);
+        renderClusters();
+    });
 }
 
 function sendToGoogleSheets(sessionData) {
@@ -185,7 +193,6 @@ function getMostPickedChoices(questionTallies) {
         });
 
         const matchingChoice = question.choices.find(choice => choice.preference === topPreference);
-
         const totalVotes = Object.values(tally).reduce((sum, c) => sum + c, 0); 
 
         results.push({
@@ -504,8 +511,6 @@ function computeClosestNodes(userVector) {
     return datasetWithDistances;
 }
 
-
-
 usernameConfirmBtn.addEventListener("click", () => {
     const enteredUsername = usernameInput.value.trim();
 
@@ -555,6 +560,7 @@ navClusterBtn.addEventListener("click", () => {
     const currentlyActive = document.querySelector(".page.active");
     if (currentlyActive !== pageCluster) previousPage = currentlyActive; 
     showPage(pageCluster);
+    renderClusters();
 });
 
 navQuizBtn.addEventListener("click", () => {
