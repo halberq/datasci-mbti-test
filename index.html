@@ -17,6 +17,7 @@
     <nav>
         <button id="nav-quiz-btn">Quiz</button>
         <button id="nav-analytics-btn">Analytics</button>
+        <button id="nav-cluster-btn">Explore</button>
     </nav>
 </header>
 
@@ -76,6 +77,30 @@
         <button id="most-picked-next" class="carousel-arrow" aria-label="Next question">›</button>
     </div>
     <p id="most-picked-position" class="carousel-position"></p>
+</section>
+
+<!-- CLUSTERING PAGE -->
+<section class="page" id="page-cluster">
+    <h2>Celebs Clusters</h2>
+    <p id="cluster-hint" style="display: none;">Take the quiz to see where you land among these famous people!</p>
+    <div class="cluster-grid">
+        <div class="cluster-region" id="region-analysts">
+            <h3 class="region-label">Analysts</h3>
+            <div class="region-points"></div>
+        </div>
+        <div class="cluster-region" id="region-diplomats">
+            <h3 class="region-label">Diplomats</h3>
+            <div class="region-points"></div>
+        </div>
+        <div class="cluster-region" id="region-sentinels">
+            <h3 class="region-label">Sentinels</h3>
+            <div class="region-points"></div>
+        </div>
+        <div class="cluster-region" id="region-explorers">
+            <h3 class="region-label">Explorers</h3>
+            <div class="region-points"></div>
+        </div>
+    </div>
 </section>
 
 <script src="client/script.js"></script>

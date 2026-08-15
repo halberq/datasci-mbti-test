@@ -2,7 +2,7 @@
     "questions": [
         {
             "id": "q1",
-            "question": "It's the first week of the semester. You'd rather...",
+            "question": "You are locked out of your dorm. What do you do?",
             "key": "EI",
             "choices": [
                 {"choice": "Join a group project chat and start throwing out ideas","preference": "E"},

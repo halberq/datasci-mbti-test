@@ -46,6 +46,10 @@ const mostPickedPosition = document.getElementById("most-picked-position");
 const mostPickedPrevBtn = document.getElementById("most-picked-prev");
 const mostPickedNextBtn = document.getElementById("most-picked-next");
 
+// Clustering elements
+const navClusterBtn = document.getElementById("nav-cluster-btn");
+const pageCluster = document.getElementById("page-cluster");
+
 let analyticsChart = null; 
 let pollIntervalId = null;
 let previousPage = pageIntro;
@@ -53,9 +57,10 @@ let axisChart = null;
 let hasLoadedAnalyticsOnce = false;
 let mostPickedResults = []; 
 let mostPickedIndex = 0; 
+let celebsData = [];
 
 function showPage(pageToShow) {
-    [pageUsername, pageIntro, pageQuiz, pageResult, pageAnalytics].forEach(page => page.classList.remove("active"));
+    [pageUsername, pageIntro, pageQuiz, pageResult, pageAnalytics, pageCluster].forEach(page => page.classList.remove("active"));
     pageToShow.classList.add("active");
 }
 
@@ -107,6 +112,8 @@ function submitAnswers() {
         resultMessage.textContent = `${username}, your results show that your MBTI is ${finalType}!`;
         resultType.textContent = data.type_code;
         showPage(pageResult);
+
+        renderClusters();
 
         const sessionData = {
             username: username,
@@ -339,6 +346,118 @@ function stopPolling() {
     pollIntervalId = null;
 }
 
+function getGroupInfo(type) {
+    const ei = type[0], sn = type[1], tf = type[2], jp = type[3];
+
+    let group;
+    if (sn === "N" && tf === "T") group = "Analysts";
+    else if (sn === "N" && tf === "F") group = "Diplomats";
+    else if (sn === "S" && jp === "J") group = "Sentinels";
+    else group = "Explorers";
+
+    const x = ei === "E" ? 1 : 0;
+    const y = (group === "Analysts" || group === "Diplomats")
+        ? (jp === "J" ? 1 : 0)
+        : (tf === "T" ? 1 : 0);
+
+    return { group, x, y };
+}
+
+function loadCelebs() {
+    fetch("celebs.json")
+        .then(response => response.json())
+        .then(data => {
+            celebsData = data.people;
+            renderClusters();
+        })
+        .catch(error => console.error("Error loading celebrity data:", error));
+}
+
+function getGroupInfo(type) {
+    const ei = type[0], sn = type[1], tf = type[2], jp = type[3];
+
+    let group;
+    if (sn === "N" && tf === "T") group = "analysts";
+    else if (sn === "N" && tf === "F") group = "diplomats";
+    else if (sn === "S" && jp === "J") group = "sentinels";
+    else group = "explorers";
+
+    const x = ei === "E" ? 1 : 0; // E/I is always the x-axis
+    const y = (group === "analysts" || group === "diplomats")
+        ? (jp === "J" ? 1 : 0)   // Analysts/Diplomats: J/P is the remaining free letter
+        : (tf === "T" ? 1 : 0);  // Sentinels/Explorers: T/F is the remaining free letter
+
+    return { group, x, y };
+}
+
+function renderClusters() {
+    const byType = {};
+    celebsData.forEach(person => {
+        if (!byType[person.type]) byType[person.type] = [];
+        byType[person.type].push(person);
+
+     renderUserPin();
+    });
+
+    document.querySelectorAll(".region-points").forEach(el => el.innerHTML = ""); 
+
+    Object.entries(byType).forEach(([type, people]) => {
+        const { group, x, y } = getGroupInfo(type);
+        const regionEl = document.querySelector(`#region-${group} .region-points`);
+
+        const baseXPercent = x === 1 ? 75 : 25;
+        const baseYPercent = y === 1 ? 25 : 75;
+
+        people.forEach((person, index) => {
+            const circle = document.createElement("div");
+            circle.className = "person-circle";
+
+            const spacingPx = 44;
+            const offsetPx = (index - (people.length - 1) / 2) * spacingPx;
+
+            circle.style.left = `calc(${baseXPercent}% + ${offsetPx}px)`;
+            circle.style.top = `${baseYPercent}%`;
+
+            const tooltip = document.createElement("div");
+            tooltip.className = "person-tooltip";
+            tooltip.innerHTML = `<strong>${person.name}</strong><br>${person.type} — ${person.category}<br>${person.bio}`;
+            circle.appendChild(tooltip);
+
+            regionEl.appendChild(circle);
+        });
+    });
+}
+
+function renderUserPin() {
+    const hint = document.getElementById("cluster-hint");
+
+    if (!finalType) {
+        
+        if (hint) hint.style.display = "block";
+        return;
+    }
+    if (hint) hint.style.display = "none";
+
+    const { group, x, y } = getGroupInfo(finalType);
+    const regionEl = document.querySelector(`#region-${group} .region-points`);
+
+    const baseXPercent = x === 1 ? 75 : 25;
+    const baseYPercent = y === 1 ? 25 : 75;
+
+    const pin = document.createElement("div");
+    pin.className = "person-circle user-pin"; 
+
+    pin.style.left = `calc(${baseXPercent}% + 26px)`;
+    pin.style.top = `${baseYPercent}%`;
+
+    const tooltip = document.createElement("div");
+    tooltip.className = "person-tooltip";
+    tooltip.innerHTML = `<strong>You (${username})</strong><br>${finalType}`;
+    pin.appendChild(tooltip);
+
+    regionEl.appendChild(pin);
+}
+
 usernameConfirmBtn.addEventListener("click", () => {
     const enteredUsername = usernameInput.value.trim();
 
@@ -384,6 +503,12 @@ navAnalyticsBtn.addEventListener("click", () => {
     startPolling(); 
 });
 
+navClusterBtn.addEventListener("click", () => {
+    const currentlyActive = document.querySelector(".page.active");
+    if (currentlyActive !== pageCluster) previousPage = currentlyActive; 
+    showPage(pageCluster);
+});
+
 navQuizBtn.addEventListener("click", () => {
     stopPolling(); 
     showPage(previousPage);
@@ -400,3 +525,4 @@ mostPickedNextBtn.addEventListener("click", () => {
 });
 
 loadQuestions();
+loadCelebs();
