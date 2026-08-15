@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler
 import json 
+import pandas as pd
 
 PREFS = [ # List of Tuples containing each MBTI preference
     ("E", "I"), ("S", "N"), ("T", "F"), ("J", "P")
@@ -33,3 +34,7 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps({"type_code": type_code}).encode('utf-8'))
         return
+
+def csv_to_json(csv_file_path):
+    df = pd.read_csv(csv_file_path)
+    return df.to_dict(orient='records')
