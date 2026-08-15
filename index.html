@@ -81,24 +81,12 @@
 
 <!-- CLUSTERING PAGE -->
 <section class="page" id="page-cluster">
-    <h2>Celebs Clusters</h2>
+    <h2>Clusters</h2>
     <p id="cluster-hint" style="display: none;">Take the quiz to see where you land among these famous people!</p>
-    <div class="cluster-grid">
-        <div class="cluster-region" id="region-analysts">
-            <h3 class="region-label">Analysts</h3>
-            <div class="region-points"></div>
-        </div>
-        <div class="cluster-region" id="region-diplomats">
-            <h3 class="region-label">Diplomats</h3>
-            <div class="region-points"></div>
-        </div>
-        <div class="cluster-region" id="region-sentinels">
-            <h3 class="region-label">Sentinels</h3>
-            <div class="region-points"></div>
-        </div>
-        <div class="cluster-region" id="region-explorers">
-            <h3 class="region-label">Explorers</h3>
-            <div class="region-points"></div>
+    <div class="radar-chart-card">
+        <h3>Distance Radar View</h3>
+        <div class="radar-chart-container">
+            <canvas id="cluster-radar-chart"></canvas>
         </div>
     </div>
 </section>

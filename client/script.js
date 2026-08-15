@@ -54,6 +54,7 @@ let analyticsChart = null;
 let pollIntervalId = null;
 let previousPage = pageIntro;
 let axisChart = null;
+let clusterRadarChart = null;
 let hasLoadedAnalyticsOnce = false;
 let mostPickedResults = []; 
 let mostPickedIndex = 0; 
@@ -456,6 +457,87 @@ function renderUserPin() {
     pin.appendChild(tooltip);
 
     regionEl.appendChild(pin);
+}
+
+function calculateEuclideanDistance(vec1, vec2) {
+    let sumSq = 0;
+    const keys = Object.keys(vec1);
+    
+    if (keys.length === 0) return 0; // Return zero if user hasn't answered questions yet
+
+    keys.forEach(key => {
+        // Convert non-numeric values (e.g. strings) to numeric hashes if necessary
+        const val1 = typeof vec1[key] === 'number' ? vec1[key] : (vec1[key] ? vec1[key].charCodeAt(0) : 0);
+        const val2 = typeof vec2[key] === 'number' ? vec2[key] : (vec2[key] ? vec2[key].charCodeAt(0) : 0);
+        
+        const diff = val1 - val2;
+        sumSq += diff * diff;
+    });
+    
+    return Math.sqrt(sumSq);
+}
+
+function computeClusterDistances() {
+    if (!celebsData || celebsData.length === 0) return [];
+
+    const datasetWithDistances = celebsData.map(person => {
+        // Fallback mockup vector matching user answers if missing in JSON
+        const personVector = person.answers || {};
+        const distance = calculateEuclideanDistance(userAnswers, personVector);
+
+        return {
+            label: person.name || person.type,
+            distance: parseFloat(distance.toFixed(2))
+        };
+    });
+
+    // Sort closest to furthest
+    datasetWithDistances.sort((a, b) => a.distance - b.distance);
+    return datasetWithDistances;
+}
+
+function renderRadarClusterChart(clusterDataset) {
+    const chartCanvas = document.getElementById("cluster-radar-chart");
+    if (!chartCanvas) return;
+
+    const labels = clusterDataset.map(item => item.label);
+    const distances = clusterDataset.map(item => item.distance);
+
+    if (clusterRadarChart) {
+        clusterRadarChart.data.labels = labels;
+        clusterRadarChart.data.datasets[0].data = distances;
+        clusterRadarChart.update();
+    } else {
+        const ctx = chartCanvas.getContext("2d");
+        clusterRadarChart = new Chart(ctx, {
+            type: "radar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Euclidean Distance",
+                    data: distances,
+                    fill: true,
+                    backgroundColor: "rgba(75, 192, 192, 0.2)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    pointBackgroundColor: "rgba(75, 192, 192, 1)",
+                    pointBorderColor: "#fff",
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "rgba(75, 192, 192, 1)"
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { display: true },
+                        suggestedMin: 0,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+    }
 }
 
 usernameConfirmBtn.addEventListener("click", () => {
