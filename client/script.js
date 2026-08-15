@@ -102,6 +102,13 @@ function selectAnswer(questionId, preference) {
 }
 
 function submitAnswers() {
+    resultMessage.textContent = `${username}, your profile vector is complete!`;
+    showPage(pageResult);
+
+    const clusterDistances = computeClusterDistances();
+    renderResultRadarChart(clusterDistances);
+    renderClusters();
+
     fetch("/api/score", {
         method: "POST",
         headers: {"Content-Type": "application/json"},  
@@ -123,14 +130,8 @@ function submitAnswers() {
         sendToGoogleSheets(sessionData);
     })
     .catch(error => {
-        console.error("Error submitting answers:", error);
+        console.warn("Background API sync failed, using client-rendered results:", error);
         // Render locally if backend API endpoint is offline
-        resultMessage.textContent = `${username}, your profile vector is complete!`;
-        showPage(pageResult);
-
-        const clusterDistances = computeClusterDistances();
-        renderResultRadarChart(clusterDistances);
-        renderClusters();
     });
 }
 
@@ -141,6 +142,68 @@ function sendToGoogleSheets(sessionData) {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(sessionData)
     })
+}
+
+function renderResultRadarChart(clusterDataset) {
+    const chartCanvas = document.getElementById("result-radar-chart");
+    if (!chartCanvas) return;
+
+    if (!clusterDataset || clusterDataset.length === 0) {
+        console.warn("No upperclassmen dataset available. Ensure celebs.json is loaded properly.");
+        return;
+    }
+
+    // Extract top 6 closest upperclassmen matches
+    const topMatches = clusterDataset.slice(0, 6);
+    const labels = topMatches.map(item => item.label);
+    const distances = topMatches.map(item => item.distance);
+    const userCenter = topMatches.map(() => 0);
+
+    // Properly destroy existing instance before re-creating the chart
+    if (resultRadarChart) {
+        resultRadarChart.destroy();
+    }
+
+    const ctx = chartCanvas.getContext("2d");
+    resultRadarChart = new Chart(ctx, {
+        type: "radar",
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: `You (${username || "User"})`,
+                    data: userCenter,
+                    fill: true,
+                    backgroundColor: "rgba(241, 91, 181, 0.4)",
+                    borderColor: "rgba(241, 91, 181, 1)",
+                    pointBackgroundColor: "rgba(241, 91, 181, 1)",
+                    pointRadius: 6
+                },
+                {
+                    label: "Upperclassman Distance (Lower = Closer)",
+                    data: distances,
+                    fill: true,
+                    backgroundColor: "rgba(155, 93, 229, 0.2)",
+                    borderColor: "rgba(155, 93, 229, 1)",
+                    pointBackgroundColor: "rgba(77, 124, 254, 1)",
+                    pointRadius: 4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    min: 0,
+                    angleLines: { color: "rgba(155, 93, 229, 0.2)" },
+                    grid: { color: "rgba(155, 93, 229, 0.2)" },
+                    pointLabels: { color: "#a89fc2", font: { size: 12, weight: 'bold' } },
+                    ticks: { color: "#a89fc2", backdropColor: "transparent", stepSize: 1 }
+                }
+            }
+        }
+    });
 }
 
 function getDedupedRows(rows) {
