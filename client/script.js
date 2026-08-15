@@ -364,14 +364,11 @@ function stopPolling() {
 }
 
 function loadUpperclassmenData() {
-    fetch("test_csv.json")
-        .then(response => response.json())
-        .then(data => {
-            celebsData = data;
-            renderClusters();
-        })
-        .catch(error => console.error("Error loading CSV test data:", error));
-}
+    fetch("test_csv.csv")
+        .then(response => response.text())
+        .then(csvText => {
+            const lines = csvText.trim().split("\n");
+            const headers = lines[0].split(",").map(h => h.trim());
 
             // Convert CSV rows into data vectors
             celebsData = lines.slice(1).map(line => {
