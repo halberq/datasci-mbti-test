@@ -299,8 +299,15 @@ function convertToPolarCartesian(userVector, personVector) {
 }
 
 function renderPolarScatterChart() {
-    const ctx = document.getElementById("cluster-radar-chart").getContext("2d");
-    if (clusterRadarChart) clusterRadarChart.destroy();
+
+    const canvas = document.getElementById("cluster-pcords-chart");
+    if (!canvas) {
+        console.error("Could not find canvas with ID 'cluster-pcords-chart'. Check your HTML!");
+        return;
+    }
+    const ctx = canvas.getContext("2d");
+
+    if (resultRadarChart) resultRadarChart.destroy();
 
     const userVector = getUserAnswerVector();
 
@@ -317,7 +324,9 @@ function renderPolarScatterChart() {
         };
     });
 
-    clusterRadarChart = new Chart(ctx, {
+    console.log("Data successfully connected! Plotting points:", scatterPoints);
+
+    resultPcoordsChart = new Chart(ctx, {
         type: 'scatter',
         data: {
             datasets: [
@@ -341,7 +350,7 @@ function renderPolarScatterChart() {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: true,
             plugins: {
                 tooltip: {
                     callbacks: {
