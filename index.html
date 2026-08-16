@@ -1,103 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="client/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;1,700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Whats your MBTI?</title>
-</head>
-<body>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="client/style.css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;1,700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">    
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <title>Whats your MBTI?</title>
+    </head>
+    <body>
 
-<header>
-    <div class="logo">
-        <img src="client/CODEX.png" alt="CODEX Logo" class="logo-image">
-    </div>
-    <nav>
-        <button id="nav-quiz-btn">Quiz</button>
-        <button id="nav-analytics-btn">Analytics</button>
-        <button id="nav-cluster-btn">Explore</button>
-    </nav>
-</header>
-
-<!-- USERNAME PAGE -->
-<section class="page active" id="page-username">
-    <h1>Welcome!</h1>
-    <p>Enter your name to begin.</p>
-    <input type="text" id="username-input" placeholder="Your name">
-    <button id="username-confirm-btn">Continue</button>
-</section>
-
-<!-- INTRO PAGE -->
-<section class="page" id="page-intro">
-    <h1 id="intro-greeting"></h1>
-    <p>Answer a few questions to find out!</p>
-    <button id="start-btn">Start Quiz</button>
-</section>
-
-<!-- QUIZ PAGE -->
-<section class="page" id="page-quiz">
-    <p id="question-progress"></p>
-    <h2 id="question-text"></h2>
-    <div id ="choices-container"></div>
-</section>
-
-<!-- RESULTS PAGE -->
-<section class="page" id="page-result">
-    <h2 id="result-message"></h2>
-    <p id="result-summary">Here are the upperclassmen most similar to your responses:</p>
-    
-    <div class="radar-chart-card">
-        <h3>Upperclassman Match Proximity</h3>
-        <div class="radar-chart-container">
-            <canvas id="results-pcords-chart"></canvas>
+    <header>
+        <div class="logo">
+            <img src="client/CODEX.png" alt="CODEX Logo" class="logo-image">
         </div>
-    </div>
+        <nav>
+            <button id="nav-quiz-btn">Quiz</button>
+            <button id="nav-analytics-btn">Analytics</button>
+            <button id="nav-cluster-btn">Explore</button>
+        </nav>
+    </header>
 
-    <button id="restart-btn">Restart Quiz</button>
-</section>
+    <!-- USERNAME PAGE -->
+    <section class="page active" id="page-username">
+        <h1>Welcome!</h1>
+        <p>Enter your name to begin.</p>
+        <input type="text" id="username-input" placeholder="Your name">
+        <button id="username-confirm-btn">Continue</button>
+    </section>
 
-<!-- ANALYTICS PAGE -->
- <section class="page" id="page-analytics">
+    <!-- INTRO PAGE -->
+    <section class="page" id="page-intro">
+        <h1 id="intro-greeting"></h1>
+        <p>Answer a few questions to find out!</p>
+        <button id="start-btn">Start Quiz</button>
+    </section>
 
-    <h2>Live Results</h2>
-    <p id="analytics-total"></p>
-    <canvas id="analytics-chart"></canvas>
+    <!-- QUIZ PAGE -->
+    <section class="page" id="page-quiz">
+        <p id="question-progress"></p>
+        <h2 id="question-text"></h2>
+        <div id ="choices-container"></div>
+    </section>
 
-    <h2>Axis Breakdown</h2>
-    <p id="axis-chart-total"></p>
-    <canvas id="axis-chart"></canvas>
-    
-    <h2>Most Picked Answers</h2>
-    <p id="most-picked-status"></p>
-    <div class="carousel-card">
-        <button id="most-picked-prev" class="carousel-arrow" aria-label="Previous question">‹</button>
-        <div class="carousel-content">
-            <p id="most-picked-question" class="carousel-question"></p>
-            <p id="most-picked-answer" class="carousel-answer"></p>
-            <p id="most-picked-count" class="carousel-count"></p>
+    <!-- RESULTS PAGE -->
+    <section class="page" id="page-result">
+        <h2 id="result-message"></h2>
+        <p id="result-summary">Here are the upperclassmen most similar to your responses:</p>
+        
+        <div class="chart-container">
+            <h3>Upperclassman Match Proximity</h3>
+            <div class="radar-chart-container">
+                <canvas id="results-pcords-chart"></canvas>
+            </div>
         </div>
-        <button id="most-picked-next" class="carousel-arrow" aria-label="Next question">›</button>
-    </div>
-    <p id="most-picked-position" class="carousel-position"></p>
-</section>
 
-<!-- CLUSTERING PAGE -->
-<section class="page" id="page-cluster">
-    <h2>Clusters</h2>
-    <p id="cluster-hint" style="display: none;">Take the quiz to see where you land among these famous people!</p>
-    <div class="radar-chart-card">
-        <h3>Distance Radar View</h3>
-        <div class="radar-chart-container">
-            <canvas id="cluster-pcords-chart"></canvas>
+        <button id="restart-btn">Restart Quiz</button>
+    </section>
+
+    <!-- ANALYTICS PAGE -->
+    <section class="page" id="page-analytics">
+
+        <h2>Live Results</h2>
+        <p id="analytics-total"></p>
+        <canvas id="analytics-chart"></canvas>
+
+        <h2>Axis Breakdown</h2>
+        <p id="axis-chart-total"></p>
+        <canvas id="axis-chart"></canvas>
+        
+        <h2>Most Picked Answers</h2>
+        <p id="most-picked-status"></p>
+        <div class="carousel-card">
+            <button id="most-picked-prev" class="carousel-arrow" aria-label="Previous question">‹</button>
+            <div class="carousel-content">
+                <p id="most-picked-question" class="carousel-question"></p>
+                <p id="most-picked-answer" class="carousel-answer"></p>
+                <p id="most-picked-count" class="carousel-count"></p>
+            </div>
+            <button id="most-picked-next" class="carousel-arrow" aria-label="Next question">›</button>
         </div>
-    </div>
-</section>
+        <p id="most-picked-position" class="carousel-position"></p>
+    </section>
 
-<script src="client/script.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <!-- CLUSTERING PAGE -->
+    <section class="page" id="page-cluster">
+        <h2>Clusters</h2>
+        <p id="cluster-hint" style="display: none;">Take the quiz to see where you land among these famous people!</p>
+        <div class="radar-chart-card">
+            <h3>Distance Radar View</h3>
+            <div class="radar-chart-container">
+                <canvas id="cluster-pcords-chart"></canvas>
+            </div>
+        </div>
+    </section>
 
-</body>
-</html>
+    <script src="client/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+
+    </body>
+    </html>

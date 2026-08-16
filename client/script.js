@@ -60,6 +60,7 @@ let hasLoadedAnalyticsOnce = false;
 let mostPickedResults = []; 
 let mostPickedIndex = 0; 
 let celebsData = [];
+let resultPcoordsChart = null;
 
 function showPage(pageToShow) {
     [pageUsername, pageIntro, pageQuiz, pageResult, pageAnalytics, pageCluster].forEach(page => page.classList.remove("active"));
@@ -300,14 +301,14 @@ function convertToPolarCartesian(userVector, personVector) {
 
 function renderPolarScatterChart() {
 
-    const canvas = document.getElementById("cluster-pcords-chart");
+    const canvas = document.getElementById("results-pcords-chart");
     if (!canvas) {
-        console.error("Could not find canvas with ID 'cluster-pcords-chart'. Check your HTML!");
+        console.error("Could not find canvas with ID 'results-pcords-chart'. Check HTML");
         return;
     }
     const ctx = canvas.getContext("2d");
 
-    if (resultRadarChart) resultRadarChart.destroy();
+    if (resultPcoordsChart) resultPcoordsChart.destroy();
 
     const userVector = getUserAnswerVector();
 
@@ -571,53 +572,6 @@ function computeClusterDistances() {
 
     datasetWithDistances.sort((a, b) => a.distance - b.distance);
     return datasetWithDistances;
-}
-
-function renderRadarClusterChart(clusterDataset) {
-    const chartCanvas = document.getElementById("cluster-radar-chart");
-    if (!chartCanvas || clusterDataset.length === 0) return;
-
-    const topMatches = clusterDataset.slice(0, 8);
-    const labels = topMatches.map(item => item.label);
-    const distances = topMatches.map(item => item.distance);
-
-    if (clusterRadarChart) {
-        clusterRadarChart.data.labels = labels;
-        clusterRadarChart.data.datasets[0].data = distances;
-        clusterRadarChart.update();
-    } else {
-        const ctx = chartCanvas.getContext("2d");
-        clusterRadarChart = new Chart(ctx, {
-            type: "radar",
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: "Euclidean Distance",
-                    data: distances,
-                    fill: true,
-                    backgroundColor: "rgba(155, 93, 229, 0.2)",
-                    borderColor: "rgba(155, 93, 229, 1)",
-                    pointBackgroundColor: "rgba(241, 91, 181, 1)",
-                    pointBorderColor: "#fff",
-                    pointHoverBackgroundColor: "#fff",
-                    pointHoverBorderColor: "rgba(241, 91, 181, 1)"
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    r: {
-                        angleLines: { color: "rgba(155, 93, 229, 0.2)" },
-                        grid: { color: "rgba(155, 93, 229, 0.2)" },
-                        pointLabels: { color: "#a89fc2", font: { size: 12 } },
-                        ticks: { color: "#a89fc2", backdropColor: "transparent", stepSize: 1 },
-                        suggestedMin: 0
-                    }
-                }
-            }
-        });
-    }
 }
 
 function getUserAnswerVector() {
