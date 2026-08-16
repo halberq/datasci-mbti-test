@@ -145,6 +145,8 @@ function submitAnswers() {
     })
     .catch(error => {
         console.warn("Background API sync failed, using client-rendered results:", error);
+        celebsData = celebsData || []; // Ensure it remains an array
+        renderPolarScatterChart();
         // Render locally if backend API endpoint is offline
     });
 }
@@ -309,16 +311,32 @@ function renderPolarScatterChart() {
 
     const userVector = getUserAnswerVector();
 
+    // Ensure celebsData is an array before calling .map()
+    const safeCelebsData = Array.isArray(celebsData) ? celebsData : [];
+
     // Map upperclassmen into (x, y) offset relative to user
-    const scatterPoints = celebsData.map(person => {
-        const personVector = person.vector || Object.keys(person.answers).sort().map(k => person.answers[k]);
+    const scatterPoints = safeCelebsData.map(person => {
+
+        let personVector = [];
+        if (Array.isArray(person.vector)) {
+            personVector = person.vector;
+        } else if (person.answers && typeof person.answers === 'object') {
+            personVector = Object.keys(person.answers).sort().map(k => person.answers[k]);
+        } else {
+            personVector = Object.keys(person)
+                .filter(k => k.startsWith("Q"))
+                .sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)))
+                .map(k => Number(person[k]) || 0);
+        }
+
         const coords = convertToPolarCartesian(userVector, personVector);
 
         return {
             x: coords.x,
             y: coords.y,
             name: person.Name || person.name || "Upperclassman",
-            dist: coords.distance
+            dist: coords.distance,
+            rawPerson: person
         };
     });
 
@@ -351,6 +369,20 @@ function renderPolarScatterChart() {
         options: {
             responsive: true,
             maintainAspectRatio: true,
+
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const firstElement = elements[0];
+
+                    if (firstElement.datasetIndex === 0) {
+                        const clickedPoint = scatterPoints[firstElement.index];
+                        if (clickedPoint && clickedPoint.rawPerson) {
+                            openBioPanel(clickedPoint.rawPerson);
+                        }
+                    }
+                }
+            },
+
             plugins: {
                 tooltip: {
                     callbacks: {
@@ -366,6 +398,7 @@ function renderPolarScatterChart() {
                     }
                 }
             },
+
             scales: {
                 x: {
                     grid: { color: 'rgba(255, 255, 255, 0.1)' },
@@ -636,38 +669,6 @@ function openBioPanel(person) {
 document.getElementById("close-bio-btn").addEventListener("click", () => {
     document.getElementById("bio-panel").classList.remove("active");
 });
-
-function renderPolarScatterChart(upperclassmenData) {
-    const canvas = document.getElementById("results-pcords-chart");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-
-    if (resultRadarChart) resultRadarChart.destroy();
-
-    resultRadarChart = new Chart(ctx, {
-        type: 'scatter', 
-        data: { upperclassmen_data: upperclassmenData.map(person => {
-            const userVector = getUserAnswerVector();
-            const personVector = Object.keys(person.answers).sort().map(k => person.answers[k]);
-            const coords = convertToPolarCartesian(userVector, personVector);
-            return { x: coords.x, y: coords.y };
-        })},
-        
-        options: {
-            // Add click event directly to chart options
-            onClick: (event, elements) => {
-                if (elements.length > 0) {
-                    const clickedIndex = elements[0].index;
-                    const selectedPerson = upperclassmenData[clickedIndex];
-                    
-                    if (selectedPerson) {
-                        openBioPanel(selectedPerson);
-                    }
-                }
-            },
-        }
-    });
-}
 
 usernameConfirmBtn.addEventListener("click", () => {
     const enteredUsername = usernameInput.value.trim();
