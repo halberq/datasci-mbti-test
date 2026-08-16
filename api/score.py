@@ -40,21 +40,18 @@ class handler(BaseHTTPRequestHandler):
                 upperclassmen_data = csv_to_json("test_csv.csv")
             except Exception:
                 # Fallback to alternative path if test_csv.csv is inside data folder
-                try:
-                    upperclassmen_data = csv_to_json("data/mbti_dataset.csv")
-                except Exception:
-                    upperclassmen_data = []
+                upperclassmen_data = []
 
             #Return Success JSON
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
-            self.wfile.write(json.dumps({"type_code": type_code}).encode('utf-8'))
 
             response_payload = {
                 "type_code": type_code,
-                "upperclassmen": upperclassmen_data 
+                "upperclassmen": upperclassmen_data
             }
+            
             self.wfile.write(json.dumps(response_payload).encode('utf-8'))
             return
 

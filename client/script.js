@@ -107,7 +107,6 @@ function submitAnswers() {
     showPage(pageResult);
 
     const clusterDistances = computeClusterDistances();
-    // renderResultRadarChart(clusterDistances);
     renderClusters();
 
     fetch("/api/score", {
@@ -116,13 +115,29 @@ function submitAnswers() {
         body: JSON.stringify({ answers: userAnswers })
     })
     .then(response => response.json())
-    .then(() => {
+    .then(data => {
+
+        if (data.upperclassmen && data.upperclassmen.length > 0) {
+            celebsData = data.upperclassmen.map(item => {
+                // Extract Q1 through Q10 numerical values
+                const vector = [];
+                for (let i = 1; i <= 10; i++) {
+                    vector.push(Number(item[`Q${i}`]) || 0);
+                }
+                return {
+                    Name: item.Name || "Upperclassman",
+                    vector: vector
+                };
+            });
+
+            renderPolarScatterChart();
+
+            } else {
+            console.warn("No upperclassmen data received from backend.");
+        }
+
         resultMessage.textContent = `${username}, your profile vector is complete!`;
         showPage(pageResult);
-
-        const clusterDistances = computeClusterDistances();
-        renderResultRadarChart(clusterDistances);
-        renderClusters();
 
         const sessionData = {
             username: username,
