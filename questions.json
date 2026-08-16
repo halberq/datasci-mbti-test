@@ -159,7 +159,7 @@
       "question": "What would you name a kambing (goat)?",
       "key": "JP",
       "choices": [
-        {"choice": "Carl Josef Eduardo", "preference": 1},
+        {"choice": "Carl Joseph Eduardo", "preference": 1},
         {"choice": "LeBron James", "preference": 2},
         {"choice": "Intel Panther Lake Ultra 9 280K", "preference": 3},
         {"choice": "Brownie", "preference": 4}
