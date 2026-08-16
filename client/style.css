@@ -184,6 +184,19 @@ button.primary:hover, #start-btn:hover, #restart-btn:hover, #username-confirm-bt
     line-height: 1.5;
 }
 
+.closest-match-label {
+    margin: 1rem 0 1.5rem;
+    padding: 0.9rem 1.1rem;
+    background: linear-gradient(135deg, rgba(155, 93, 229, 0.2), rgba(241, 91, 181, 0.16));
+    border: 1px solid var(--pink);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: "Space Grotesk", Helvetica, Arial, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    box-shadow: 0 0 24px rgba(241, 91, 181, 0.12);
+}
+
 .bio-panel {
     position: fixed;
     top: 0;

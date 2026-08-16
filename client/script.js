@@ -395,6 +395,17 @@ function renderPolarScatterChart() {
         };
     });
 
+    // The closest match is always the first JSON object in the plotted array.
+    scatterPoints.sort((a, b) => a.dist - b.dist || a.name.localeCompare(b.name));
+    const closestPoint = scatterPoints[0] || null;
+    const closestMatchLabel = document.getElementById("closest-match-label");
+
+    if (closestMatchLabel) {
+        closestMatchLabel.textContent = closestPoint
+            ? `Ang Ka Vibe Nimo Na Coder is ${closestPoint.name}`
+            : "No coder match is available right now.";
+    }
+
     const greatestDistance = Math.max(...scatterPoints.map(point => point.dist), 1);
     const plotLimit = Math.ceil(greatestDistance * 1.15 * 2) / 2;
 
@@ -405,11 +416,16 @@ function renderPolarScatterChart() {
                 {
                     label: 'Upperclassmen Clusters',
                     data: scatterPoints,
-                    backgroundColor: 'rgba(155, 93, 229, 0.78)',
-                    borderColor: '#f15bb5',
-                    borderWidth: 1.5,
-                    pointRadius: 7,
-                    pointHoverRadius: 10
+                    backgroundColor: scatterPoints.map((_point, index) =>
+                        index === 0 ? '#f15bb5' : 'rgba(155, 93, 229, 0.78)'
+                    ),
+                    borderColor: scatterPoints.map((_point, index) =>
+                        index === 0 ? '#ffffff' : '#f15bb5'
+                    ),
+                    borderWidth: scatterPoints.map((_point, index) => index === 0 ? 3 : 1.5),
+                    pointRadius: scatterPoints.map((_point, index) => index === 0 ? 12 : 7),
+                    pointHoverRadius: scatterPoints.map((_point, index) => index === 0 ? 15 : 10),
+                    pointStyle: scatterPoints.map((_point, index) => index === 0 ? 'star' : 'circle')
                 },
                 {
                     label: `You (${username || "User"})`,
@@ -447,7 +463,13 @@ function renderPolarScatterChart() {
             plugins: {
                 tooltip: {
                     callbacks: {
-                        title: items => items[0]?.raw?.name || "Profile",
+                        title: items => {
+                            const point = items[0]?.raw;
+                            if (!point) return "Profile";
+                            return point === closestPoint
+                                ? `Ang Ka Vibe Nimo Na Coder is ${point.name}`
+                                : point.name;
+                        },
                         label: context => {
                             if (context.datasetIndex === 1) return "Distance: 0.00 · Origin";
                             return [
@@ -497,6 +519,10 @@ function renderPolarScatterChart() {
     const resetButton = document.getElementById("reset-results-chart-btn");
     if (resetButton) {
         resetButton.onclick = () => resultPcoordsChart?.resetZoom?.();
+    }
+
+    if (closestPoint) {
+        openBioPanel(closestPoint.rawPerson, true);
     }
 }
 
@@ -738,17 +764,24 @@ function computeClosestNodes(userVector) {
     return datasetWithDistances;
 }
 
-function openBioPanel(person) {
+function openBioPanel(person, isClosestMatch = false) {
     const panel = document.getElementById("bio-panel");
     const bioName = document.getElementById("bio-name");
     const bioText = document.getElementById("bio-text");
     const bioAvatar = document.getElementById("bio-avatar");
 
-    bioName.textContent = person.Name || "Anonymous Upperclassman";
+    const personName = person.Name || person.name || "Anonymous Upperclassman";
+    bioName.textContent = isClosestMatch
+        ? `Ang Ka Vibe Nimo Na Coder is ${personName}`
+        : personName;
     bioText.textContent = person.Bio || person.description || "No bio available.";
     
     // Fallback image if custom image path is not provided in CSV
-    bioAvatar.src = person.Image || "client/default-avatar.png"; 
+    bioAvatar.onerror = () => {
+        bioAvatar.onerror = null;
+        bioAvatar.src = "client/default-avatar.jpg";
+    };
+    bioAvatar.src = person.Image || "client/default-avatar.jpg";
 
     panel.classList.add("active");
 }
