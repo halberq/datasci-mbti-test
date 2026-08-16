@@ -107,7 +107,7 @@ function submitAnswers() {
     showPage(pageResult);
 
     const clusterDistances = computeClusterDistances();
-    renderResultRadarChart(clusterDistances);
+    // renderResultRadarChart(clusterDistances);
     renderClusters();
 
     fetch("/api/score", {
@@ -143,68 +143,6 @@ function sendToGoogleSheets(sessionData) {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(sessionData)
     })
-}
-
-function renderResultRadarChart(clusterDataset) {
-    const chartCanvas = document.getElementById("result-radar-chart");
-    if (!chartCanvas) return;
-
-    if (!clusterDataset || clusterDataset.length === 0) {
-        console.warn("No upperclassmen dataset available. Ensure celebs.json is loaded properly.");
-        return;
-    }
-
-    // Extract top 6 closest upperclassmen matches
-    const topMatches = clusterDataset.slice(0, 6);
-    const labels = topMatches.map(item => item.label);
-    const distances = topMatches.map(item => item.distance);
-    const userCenter = topMatches.map(() => 0);
-
-    // Properly destroy existing instance before re-creating the chart
-    if (resultRadarChart) {
-        resultRadarChart.destroy();
-    }
-
-    const ctx = chartCanvas.getContext("2d");
-    resultRadarChart = new Chart(ctx, {
-        type: "radar",
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: `You (${username || "User"})`,
-                    data: userCenter,
-                    fill: true,
-                    backgroundColor: "rgba(241, 91, 181, 0.4)",
-                    borderColor: "rgba(241, 91, 181, 1)",
-                    pointBackgroundColor: "rgba(241, 91, 181, 1)",
-                    pointRadius: 6
-                },
-                {
-                    label: "Upperclassman Distance (Lower = Closer)",
-                    data: distances,
-                    fill: true,
-                    backgroundColor: "rgba(155, 93, 229, 0.2)",
-                    borderColor: "rgba(155, 93, 229, 1)",
-                    pointBackgroundColor: "rgba(77, 124, 254, 1)",
-                    pointRadius: 4
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                r: {
-                    min: 0,
-                    angleLines: { color: "rgba(155, 93, 229, 0.2)" },
-                    grid: { color: "rgba(155, 93, 229, 0.2)" },
-                    pointLabels: { color: "#a89fc2", font: { size: 12, weight: 'bold' } },
-                    ticks: { color: "#a89fc2", backdropColor: "transparent", stepSize: 1 }
-                }
-            }
-        }
-    });
 }
 
 function getDedupedRows(rows) {
@@ -312,6 +250,110 @@ function renderChart(counts) {
             }
         });
     }
+}
+
+function convertToPolarCartesian(userVector, personVector) {
+    let sumSq = 0;
+    let xDir = 0;
+    let yDir = 0;
+    const numQuestions = Math.max(userVector.length, personVector.length);
+
+    for (let i = 0; i < numQuestions; i++) {
+        const uVal = userVector[i] || 0;
+        const pVal = personVector[i] || 0;
+        const diff = pVal - uVal;
+
+        // Euclidean Distance component
+        sumSq += diff * diff;
+
+        // Angle direction based on which questions differed
+        const phi = (i / numQuestions) * 2 * Math.PI;
+        xDir += diff * Math.cos(phi);
+        yDir += diff * Math.sin(phi);
+    }
+
+    const r = Math.sqrt(sumSq); // Radial distance from user
+    const theta = Math.atan2(yDir, xDir); // Angular direction of deviation
+
+    // Convert polar (r, theta) to Cartesian (x, y) for Chart.js scatter
+    return {
+        x: parseFloat((r * Math.cos(theta)).toFixed(2)),
+        y: parseFloat((r * Math.sin(theta)).toFixed(2)),
+        distance: parseFloat(r.toFixed(2))
+    };
+}
+
+function renderPolarScatterChart() {
+    const ctx = document.getElementById("cluster-radar-chart").getContext("2d");
+    if (clusterRadarChart) clusterRadarChart.destroy();
+
+    const userVector = getUserAnswerVector();
+
+    // Map upperclassmen into (x, y) offset relative to user
+    const scatterPoints = celebsData.map(person => {
+        const personVector = person.vector || Object.keys(person.answers).sort().map(k => person.answers[k]);
+        const coords = convertToPolarCartesian(userVector, personVector);
+
+        return {
+            x: coords.x,
+            y: coords.y,
+            name: person.Name || person.name || "Upperclassman",
+            dist: coords.distance
+        };
+    });
+
+    clusterRadarChart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [
+                {
+                    label: `You (${username || "User"})`,
+                    data: [{ x: 0, y: 0, name: username || "User", dist: 0 }],
+                    backgroundColor: '#F15BB5',
+                    pointRadius: 10,
+                    pointHoverRadius: 12,
+                    pointStyle: 'star'
+                },
+                {
+                    label: 'Upperclassmen Clusters',
+                    data: scatterPoints,
+                    backgroundColor: 'rgba(155, 93, 229, 0.7)',
+                    borderColor: '#9B5DE5',
+                    pointRadius: 6,
+                    pointHoverRadius: 9
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: (ctx) => `${ctx.raw.name} (Distance: ${ctx.raw.dist})`
+                    }
+                },
+                zoom: {
+                    pan: { enabled: true, mode: 'xy' },
+                    zoom: {
+                        wheel: { enabled: true },
+                        pinch: { enabled: true },
+                        mode: 'xy'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    title: { display: true, text: '← Response Trajectory →', color: '#a89fc2' }
+                },
+                y: {
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    title: { display: true, text: '← Response Trajectory →', color: '#a89fc2' }
+                }
+            }
+        }
+    });
 }
 
 function fetchAndRenderAnalytics() {
