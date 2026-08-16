@@ -342,12 +342,12 @@ function renderPolarScatterChart() {
                 {
                     label: `You (${username || "User"})`,
                     data: [{ x: 0, y: 0, name: username || "User", dist: 0 }],
-                    backgroundColor: '#F15BB5',
+                    backgroundColor: '#22dcf4',
                     borderColor: '#ffffff',   
                     borderWidth: 2,            
                     pointRadius: 12,           
                     pointHoverRadius: 14,
-                    pointStyle: 'star'
+                    pointStyle: 'circle'
                 }
             ]
         },
