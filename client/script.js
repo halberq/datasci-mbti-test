@@ -58,7 +58,6 @@ let mostPickedResults = [];
 let mostPickedIndex = 0; 
 let celebsData = [];
 let resultPcoordsChart = null;
-let polarChartInstance = null;
 
 function showPage(pageToShow) {
     [pageUsername, pageIntro, pageQuiz, pageResult, pageAnalytics, pageCluster].forEach(page => page.classList.remove("active"));
@@ -107,31 +106,40 @@ function submitAnswers() {
 
     const clusterDistances = computeClusterDistances();
     renderClusters();
-    renderPolarScatterChart();
 
     fetch("/api/score", {
         method: "POST",
         headers: {"Content-Type": "application/json"},  
         body: JSON.stringify({ answers: userAnswers })
     })
-    .then(response => {
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
 
         if (data.upperclassmen && data.upperclassmen.length > 0) {
-            celebsData = data.upperclassmen.map(item => ({
-                Name: item.Name || item.name || "Upperclassman",
-                Bio: item["About Me"] || item.Bio || "No bio available.",
-                vector: Object.keys(item)
-                    .filter(k => k.startsWith("Q"))
-                    .sort((a, b) => parseInt(a.replace(/\D/g, ''), 10) - parseInt(b.replace(/\D/g, ''), 10))
-                    .map(k => Number(item[k]) || 0)
-                }));
+            celebsData = data.upperclassmen.map(item => {
+
+                const questionKeys = Object.keys(item)
+                .filter(k => k.startsWith("Q"))
+                .sort((a, b) => parseInt(a.replace(/\D/g, ''), 10) - parseInt(b.replace(/\D/g, ''), 10));
+
+                // Extract Q1 through Q10 numerical values
+                const vector = questionKeys.map(key => Number(item[key]) || 0);
+
+                for (let i = 1; i <= 15; i++) { 
+                    vector.push(Number(item[`Q${i}`]) || 0);
+                }
+                return {
+                    Name: item.Name || "Upperclassman",
+                    Bio: item["About Me"] || item.Bio || item.description || "No bio provided.",
+                    vector: vector,
+                    answers: item
+                };
+            });
 
             renderPolarScatterChart();
 
+            } else {
+            console.warn("No upperclassmen data received from backend.");
         }
 
         resultMessage.textContent = `${username}, your profile vector is complete!`;
@@ -140,12 +148,14 @@ function submitAnswers() {
         const sessionData = {
             username: username,
             answers: userAnswers
-        };  
+        };
         sendToGoogleSheets(sessionData);
     })
     .catch(error => {
-        
-        console.warn("[Backend Sync] API unavailable. Running with local CSV data.");
+        console.warn("Background API sync failed, using client-rendered results:", error);
+        celebsData = celebsData || []; // Ensure it remains an array
+        renderPolarScatterChart();
+        // Render locally if backend API endpoint is offline
     });
 }
 
@@ -366,14 +376,14 @@ const polarGridPlugin = {
 
 function renderPolarScatterChart() {
 
-    const canvas = document.getElementById("polarChart");
-    if (!canvas) return;
-
+    const canvas = document.getElementById("results-pcords-chart");
+    if (!canvas) {
+        console.error("Could not find canvas with ID 'results-pcords-chart'. Check HTML");
+        return;
+    }
     const ctx = canvas.getContext("2d");
 
     if (resultPcoordsChart) resultPcoordsChart.destroy();
-
-    const clusterData = computeClusterDistances();
 
     const userVector = getUserAnswerVector();
 
@@ -588,16 +598,10 @@ function stopPolling() {
     pollIntervalId = null;
 }
 
-const RESPONSES_CSV_PATH = "responses.csv";
-
 function loadUpperclassmenData() {
-
-    console.log(`%c[1. CSV Loader] Fetching dataset from: ${RESPONSES_CSV_PATH}`, "color: #4d7cfe; font-weight: bold;");
-
-    fetch(RESPONSES_CSV_PATH)
+    fetch("test_csv.csv")
         .then(response => response.text())
         .then(csvText => {
-            console.log("%c[2. CSV Loader] Raw CSV loaded. Parsing rows...", "color: #4d7cfe;");
             const lines = csvText.trim().split("\n");
             
             const parseCSVRow = (row) => row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) 
@@ -605,11 +609,10 @@ function loadUpperclassmenData() {
                 : row.split(',').map(v => v.trim());
 
             const headers = parseCSVRow(lines[0]);    
-            console.log("[3. CSV Loader] Parsed Headers:", headers);
 
             // Convert CSV rows into data vectors
             celebsData = lines.slice(1).map(line => {
-                const values = parseCSVRow(line);
+                const values = line.split(",").map(v => v.trim());
                 const rowData = {};
                 headers.forEach((header, index) => {
                     rowData[header] = values[index];
@@ -635,10 +638,10 @@ function loadUpperclassmenData() {
                     vector: vector
                 };
             });
-            console.log(`%c[4. CSV Loader] Successfully loaded ${celebsData.length} upperclassmen profiles:`, "color: #2ec4b6; font-weight: bold;", celebsData);
+
             renderClusters();
         })
-        .catch(error => console.error("%c[CSV Loader Error] Failed to load actual responses:", "color: #e71d36; font-weight: bold;", error));
+        .catch(error => console.error("Error loading CSV test data:", error));
 }
 
 function renderClusters() {
@@ -760,10 +763,13 @@ function computeClusterDistances() {
 
 function getUserAnswerVector() {
     return Object.keys(userAnswers)
-        .filter(k => k.startsWith("Q"))
         // Sort keys numerically (Q1, Q2, ..., Q10)
-        .sort((a, b) => parseInt(a.replace(/\D/g, ''), 10) - parseInt(b.replace(/\D/g, ''), 10))
-        .map(k => parseInt(userAnswers[k], 10) || 0);
+        .sort((a, b) => {
+            const numA = parseInt(a.replace(/\D/g, ''), 10) || 0;
+            const numB = parseInt(b.replace(/\D/g, ''), 10) || 0;
+            return numA - numB;
+        })
+        .map(key => Number(userAnswers[key]) || 0);
 }
 
 function computeClosestNodes(userVector) {
