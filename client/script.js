@@ -131,7 +131,7 @@ function submitAnswers() {
                 return {
                     Name: item.Name || "Upperclassman",
                     Bio: item["About Me"] || item.Bio || item.description || "No bio provided.",
-                    vector: vector
+                    vector: vector,
                     answers: item
                 };
             });
