@@ -58,6 +58,7 @@ let mostPickedResults = [];
 let mostPickedIndex = 0; 
 let celebsData = [];
 let resultPcoordsChart = null;
+let polarChartInstance = null;
 
 function showPage(pageToShow) {
     [pageUsername, pageIntro, pageQuiz, pageResult, pageAnalytics, pageCluster].forEach(page => page.classList.remove("active"));
@@ -101,48 +102,37 @@ function selectAnswer(questionId, preference) {
 }
 
 function submitAnswers() {
-    console.log("%c[Quiz Submit] User completed quiz. Answers payload:", "color: #ff9f1c; font-weight: bold;", userAnswers);
     resultMessage.textContent = `${username}, your profile vector is complete!`;
     showPage(pageResult);
 
     const clusterDistances = computeClusterDistances();
-    console.log("[Quiz Submit] Computed cluster distances relative to user:", clusterDistances);
     renderClusters();
-
-    console.log("[Quiz Submit] Attempting backend sync to /api/score...");
+    renderPolarScatterChart();
 
     fetch("/api/score", {
         method: "POST",
         headers: {"Content-Type": "application/json"},  
         body: JSON.stringify({ answers: userAnswers })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+    })
     .then(data => {
 
         if (data.upperclassmen && data.upperclassmen.length > 0) {
-            celebsData = data.upperclassmen.map(item => {
+            celebsData = data.upperclassmen.map(item => ({
+                Name: item.Name || item.name || "Upperclassman",
+                Bio: item["About Me"] || item.Bio || "No bio available.",
+                vector: Object.keys(item)
+                    .filter(k => k.startsWith("Q"))
+                    .sort((a, b) => parseInt(a.replace(/\D/g, ''), 10) - parseInt(b.replace(/\D/g, ''), 10))
+                    .map(k => Number(item[k]) || 0)
+                }));
 
-                const questionKeys = Object.keys(item)
-                .filter(k => k.startsWith("Q"))
-                .sort((a, b) => parseInt(a.replace(/\D/g, ''), 10) - parseInt(b.replace(/\D/g, ''), 10));
-
-                // Extract Q1 through Q10 numerical values
-                const vector = questionKeys.map(key => Number(item[key]) || 0);
-
-                for (let i = 1; i <= 15; i++) { 
-                    vector.push(Number(item[`Q${i}`]) || 0);
-                }
-                return {
-                    Name: item.Name || "Upperclassman",
-                    Bio: item["About Me"] || item.Bio || item.description || "No bio provided.",
-                    vector: vector,
-                    answers: item
-                };
-            });
-        }   else {
-            console.warn("[Backend Sync] Backend returned response, but 'upperclassmen' array was empty.");
             renderPolarScatterChart();
-            }
+
+        }
 
         resultMessage.textContent = `${username}, your profile vector is complete!`;
         showPage(pageResult);
@@ -154,10 +144,8 @@ function submitAnswers() {
         sendToGoogleSheets(sessionData);
     })
     .catch(error => {
-        console.warn("Background API sync failed, using client-rendered results:", error);
-        celebsData = celebsData || []; // Ensure it remains an array
-        renderPolarScatterChart();
-        // Render locally if backend API endpoint is offline
+        
+        console.warn("[Backend Sync] API unavailable. Running with local CSV data.");
     });
 }
 
@@ -378,14 +366,14 @@ const polarGridPlugin = {
 
 function renderPolarScatterChart() {
 
-    const canvas = document.getElementById("results-pcords-chart");
-    if (!canvas) {
-        console.error("Could not find canvas with ID 'results-pcords-chart'. Check HTML");
-        return;
-    }
+    const canvas = document.getElementById("polarChart");
+    if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
 
     if (resultPcoordsChart) resultPcoordsChart.destroy();
+
+    const clusterData = computeClusterDistances();
 
     const userVector = getUserAnswerVector();
 
@@ -772,13 +760,10 @@ function computeClusterDistances() {
 
 function getUserAnswerVector() {
     return Object.keys(userAnswers)
+        .filter(k => k.startsWith("Q"))
         // Sort keys numerically (Q1, Q2, ..., Q10)
-        .sort((a, b) => {
-            const numA = parseInt(a.replace(/\D/g, ''), 10) || 0;
-            const numB = parseInt(b.replace(/\D/g, ''), 10) || 0;
-            return numA - numB;
-        })
-        .map(key => Number(userAnswers[key]) || 0);
+        .sort((a, b) => parseInt(a.replace(/\D/g, ''), 10) - parseInt(b.replace(/\D/g, ''), 10))
+        .map(k => parseInt(userAnswers[k], 10) || 0);
 }
 
 function computeClosestNodes(userVector) {
