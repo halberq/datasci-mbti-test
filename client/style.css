@@ -372,3 +372,19 @@ canvas {
         min-height: 300px;
     }
 }
+
+function openBioPanel(person) {
+    const panel = document.getElementById("bio-panel");
+    const bioName = document.getElementById("bio-name");
+    const bioText = document.getElementById("bio-text");
+    const bioAvatar = document.getElementById("bio-avatar");
+
+    if (!panel) return;
+
+    if (bioName) bioName.textContent = person.Name || person.name || "Anonymous Upperclassman";
+    if (bioText) bioText.textContent = person.Bio || person["About Me"] || person.description || "No bio available.";
+    if (bioAvatar) bioAvatar.src = person.Image || "client/default-avatar.png"; 
+
+    panel.classList.add("active");
+}
+

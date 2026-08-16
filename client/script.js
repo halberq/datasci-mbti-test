@@ -117,14 +117,22 @@ function submitAnswers() {
 
         if (data.upperclassmen && data.upperclassmen.length > 0) {
             celebsData = data.upperclassmen.map(item => {
+
+                const questionKeys = Object.keys(item)
+                .filter(k => k.startsWith("Q"))
+                .sort((a, b) => parseInt(a.replace(/\D/g, ''), 10) - parseInt(b.replace(/\D/g, ''), 10));
+
                 // Extract Q1 through Q10 numerical values
-                const vector = [];
-                for (let i = 1; i <= 10; i++) {
+                const vector = questionKeys.map(key => Number(item[key]) || 0);
+
+                for (let i = 1; i <= 15; i++) { 
                     vector.push(Number(item[`Q${i}`]) || 0);
                 }
                 return {
                     Name: item.Name || "Upperclassman",
+                    Bio: item["About Me"] || item.Bio || item.description || "No bio provided.",
                     vector: vector
+                    answers: item
                 };
             });
 
@@ -303,6 +311,21 @@ function convertToPolarCartesian(userVector, personVector) {
         theta: parseFloat(theta.toFixed(4)),
         thetaDegrees: parseFloat(thetaDegrees.toFixed(1))
     };
+}
+
+function openBioPanel(person) {
+    const panel = document.getElementById("bio-panel");
+    const bioName = document.getElementById("bio-name");
+    const bioText = document.getElementById("bio-text");
+    const bioAvatar = document.getElementById("bio-avatar");
+
+    if (!panel) return;
+
+    if (bioName) bioName.textContent = person.Name || person.name || "Anonymous Upperclassman";
+    if (bioText) bioText.textContent = person.Bio || person["About Me"] || person.description || "No bio available.";
+    if (bioAvatar) bioAvatar.src = person.Image || "client/default-avatar.png"; 
+
+    panel.classList.add("active");
 }
 
 const polarGridPlugin = {
@@ -554,23 +577,39 @@ function loadUpperclassmenData() {
         .then(response => response.text())
         .then(csvText => {
             const lines = csvText.trim().split("\n");
-            const headers = lines[0].split(",").map(h => h.trim());
+            
+            const parseCSVRow = (row) => row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) 
+                ? row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g).map(v => v.replace(/^"|"$/g, '').trim())
+                : row.split(',').map(v => v.trim());
+
+            const headers = parseCSVRow(lines[0]);    
 
             // Convert CSV rows into data vectors
             celebsData = lines.slice(1).map(line => {
                 const values = line.split(",").map(v => v.trim());
-                const name = values[0];
-                const answers = {};
+                const rowData = {};
+                headers.forEach((header, index) => {
+                    rowData[header] = values[index];
+                });
 
-                // Map Q1 through Q10 column values
-                for (let i = 1; i < headers.length; i++) {
-                    answers[headers[i]] = parseInt(values[i], 10) || 0;
-                }
+                const answers = {};
+                const vector = [];
+
+                const questionHeaders = headers
+                    .filter(h => h.startsWith("Q"))
+                    .sort((a, b) => parseInt(a.replace(/\D/g, ''), 10) - parseInt(b.replace(/\D/g, ''), 10));
+
+                questionHeaders.forEach(header => {
+                    const val = parseInt(rowData[header], 10) || 0;
+                    answers[header] = val;
+                    vector.push(val);
+                });
 
                 return {
-                    Name: name,
+                    Name: rowData["Name"] || values[0] || "Upperclassman",
+                    Bio: rowData["About Me"] || rowData["Bio"] || "", 
                     answers: answers,
-                    vector: values.slice(1).map(v => parseInt(v, 10) || 0)
+                    vector: vector
                 };
             });
 
@@ -589,6 +628,7 @@ function renderClusters() {
     clusterDistances.forEach((person, index) => {
         const circle = document.createElement("div");
         circle.className = "person-circle";
+        circle.style.cursor = "pointer";
 
         const angle = (index / Math.max(clusterDistances.length, 1)) * 2 * Math.PI;
         const radiusPercent = Math.min(person.distance * 12 + 15, 40); 
@@ -663,7 +703,9 @@ function computeClusterDistances() {
         let refVector = [];
 
         if (item.answers) {
-            refVector = Object.keys(item.answers).sort().map(k => item.answers[k]);
+            refVector = Object.keys(item.answers)
+                .sort((a, b) => parseInt(a.replace(/\D/g, ''), 10) - parseInt(b.replace(/\D/g, ''), 10))
+                .map(k => item.answers[k]);
         } else if (Array.isArray(item.vector)) {
             refVector = item.vector;
         } else {
