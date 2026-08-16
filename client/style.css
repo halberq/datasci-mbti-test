@@ -320,6 +320,55 @@ canvas {
 
 .chart-container {
     position: relative;
-    height: 1200px; 
+    height: auto;
     width: 100%;
+}
+
+.chart-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0.9rem 0 1rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.chart-toolbar button {
+    flex-shrink: 0;
+    background: var(--bg-elevated-hover);
+    border: 1px solid var(--purple);
+    border-radius: 999px;
+    color: var(--text);
+    cursor: pointer;
+    padding: 0.55rem 0.9rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.chart-toolbar button:hover {
+    border-color: var(--pink);
+    box-shadow: 0 0 18px rgba(241, 91, 181, 0.2);
+}
+
+#page-result .radar-chart-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    min-height: 360px;
+}
+
+#results-pcords-chart {
+    cursor: crosshair;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 540px) {
+    .chart-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    #page-result .radar-chart-container {
+        min-height: 300px;
+    }
 }

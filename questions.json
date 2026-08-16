@@ -5,10 +5,10 @@
       "question": "You are locked out of your dorm. What do you do?",
       "key": "EI",
       "choices": [
-        {"choice": "Break in", "preference": 1},
-        {"choice": "Sleep outside", "preference": 2},
-        {"choice": "Find a coffee shop and stay there till morning", "preference": 3},
-        {"choice": "Call the landlord", "preference": 4}
+        {"choice": "Break in", "preference": 0},
+        {"choice": "Sleep outside", "preference": 1},
+        {"choice": "Find a coffee shop and stay there till morning", "preference": 2},
+        {"choice": "Call the landlord", "preference": 3}
       ]
     },
     {
@@ -16,10 +16,10 @@
       "question": "Your code works, but you don't know why. What's your next move?",
       "key": "EI",
       "choices": [
-        {"choice": "Don't touch it. it's sacred now", "preference": 1},
-        {"choice": "Try to understand it before submitting", "preference": 2},
-        {"choice": "Add comments and go through the code again line by line", "preference": 3},
-        {"choice": "Whisper “thank you” to the coding gods and move on", "preference": 4}
+        {"choice": "Don't touch it. it's sacred now", "preference": 0},
+        {"choice": "Try to understand it before submitting", "preference": 1},
+        {"choice": "Add comments and go through the code again line by line", "preference": 2},
+        {"choice": "Whisper “thank you” to the coding gods and move on", "preference": 3}
       ]
     },
     {
@@ -27,10 +27,10 @@
       "question": "You have a long break between classes. Where are you most likely to be found?",
       "key": "EI",
       "choices": [
-        {"choice": "In the library, pretending to study but actually doom-scrolling", "preference": 1},
-        {"choice": "In the cafeteria, looking for food", "preference": 2},
-        {"choice": "In your dorm, sleeping like a legend", "preference": 3},
-        {"choice": "Walking around the campus for no reason", "preference": 4}
+        {"choice": "In the library, pretending to study but actually doom-scrolling", "preference": 0},
+        {"choice": "In the cafeteria, looking for food", "preference": 1},
+        {"choice": "In your dorm, sleeping like a legend", "preference": 2},
+        {"choice": "Walking around the campus for no reason", "preference": 3}
       ]
     },
     {
@@ -38,10 +38,10 @@
       "question": "You notice a flaw in your friend’s research presentation, and the professor says that anyone who voluntarily asks a question after each presentation gets 10 points to their score. What do you do?",
       "key": "EI",
       "choices": [
-        {"choice": "You stay silent", "preference": 1},
-        {"choice": "You ask a question, but refrain from asking about the flaw", "preference": 2},
-        {"choice": "You point out the flaw and get the 10 points, but your friend gets a low score for their research", "preference": 3},
-        {"choice": "You weren’t paying attention during the presentation", "preference": 4}
+        {"choice": "You stay silent", "preference": 0},
+        {"choice": "You ask a question, but refrain from asking about the flaw", "preference": 1},
+        {"choice": "You point out the flaw and get the 10 points, but your friend gets a low score for their research", "preference": 2},
+        {"choice": "You weren’t paying attention during the presentation", "preference": 3}
       ]
     },
     {
@@ -49,10 +49,10 @@
       "question": "You are assigned to present your group’s work. How do you prepare?",
       "key": "SN",
       "choices": [
-        {"choice": "Practice the whole presentation multiple times", "preference": 1},
-        {"choice": "Read the slides once and trust your instincts", "preference": 2},
-        {"choice": "Memorize only your part and hope nobody asks questions", "preference": 3},
-        {"choice": "Let adrenaline possess you during the presentation", "preference": 4}
+        {"choice": "Practice the whole presentation multiple times", "preference": 0},
+        {"choice": "Read the slides once and trust your instincts", "preference": 1},
+        {"choice": "Memorize only your part and hope nobody asks questions", "preference": 2},
+        {"choice": "Let adrenaline possess you during the presentation", "preference": 3}
       ]
     },
     {
@@ -60,10 +60,10 @@
       "question": "Your teammate's approach to making their part for the research project is inefficient. You…",
       "key": "SN",
       "choices": [
-        {"choice": "Point it out directly, so that you can finish the research faster", "preference": 1},
-        {"choice": "Suggest an alternative method that's faster", "preference": 2},
-        {"choice": "Do all the work yourself", "preference": 3},
-        {"choice": "Help them with their part to make the process faster", "preference": 4}
+        {"choice": "Point it out directly, so that you can finish the research faster", "preference": 0},
+        {"choice": "Suggest an alternative method that's faster", "preference": 1},
+        {"choice": "Do all the work yourself", "preference": 2},
+        {"choice": "Help them with their part to make the process faster", "preference": 3}
       ]
     },
     {
@@ -71,10 +71,10 @@
       "question": "You’re pulling an all-nighter to study for your exam tomorrow. What is your drink of choice?",
       "key": "SN",
       "choices": [
-        {"choice": "Coffee", "preference": 1},
-        {"choice": "Sting", "preference": 2},
-        {"choice": "Water", "preference": 3},
-        {"choice": "Energy drink", "preference": 4}
+        {"choice": "Coffee", "preference": 0},
+        {"choice": "Sting", "preference": 1},
+        {"choice": "Water", "preference": 2},
+        {"choice": "Energy drink", "preference": 3}
       ]
     },
     {
@@ -82,10 +82,10 @@
       "question": "Who is your favorite Data Scientist?",
       "key": "SN",
       "choices": [
-        {"choice": "Aubrey Graham", "preference": 1},
-        {"choice": "Darren Watkins Jr.", "preference": 2},
-        {"choice": "Andrej Kaparthy", "preference": 3},
-        {"choice": "Francis Kollin Morales", "preference": 4}
+        {"choice": "Aubrey Graham", "preference": 0},
+        {"choice": "Darren Watkins Jr.", "preference": 1},
+        {"choice": "Andrej Kaparthy", "preference": 2},
+        {"choice": "Francis Kollin Morales", "preference": 3}
       ]
     },
     {
@@ -93,10 +93,10 @@
       "question": "Are you willing to join CODEx next semester?",
       "key": "TF",
       "choices": [
-        {"choice": "Yes", "preference": 1},
-        {"choice": "YesYes", "preference": 2},
-        {"choice": "SUPER Yes", "preference": 3},
-        {"choice": "Click here for Non-DS (sadly bawal mo sa CODEx)", "preference": 4}
+        {"choice": "Yes", "preference": 0},
+        {"choice": "YesYes", "preference": 1},
+        {"choice": "SUPER Yes", "preference": 2},
+        {"choice": "Click here for Non-DS (sadly bawal mo sa CODEx)", "preference": 3}
       ]
     },
     {
@@ -104,10 +104,10 @@
       "question": "You’re choosing a seat on the first day of class. Where do you sit?",
       "key": "TF",
       "choices": [
-        {"choice": "Front row, ready to focus", "preference": 1},
-        {"choice": "In the middle row, balanced and safe", "preference": 2},
-        {"choice": "In the back row, mysterious and strategic", "preference": 3},
-        {"choice": "Beside the person who looks friendly", "preference": 4}
+        {"choice": "Front row, ready to focus", "preference": 0},
+        {"choice": "In the middle row, balanced and safe", "preference": 1},
+        {"choice": "In the back row, mysterious and strategic", "preference": 2},
+        {"choice": "Beside the person who looks friendly", "preference": 3}
       ]
     },
     {
@@ -115,10 +115,10 @@
       "question": "You’re walking down the hall — briskly, swiftly. But you're not late to anything, no. You have nowhere to go, nowhere to be. You bounce from room to room doing, enjoying, learning nothing.\nYou walk fast to get nothing done faster. You do nothing, eat, sleep, repeat.\n\nBut then, as the daily monotony continues to numb your mind, something — someONE crashes into you. And you start to see... nothing — you see nothing, but them. You feel nothing but the warmth of their skin. You hear nothing but the symphony of their voice: “Hala.” The numbness, ones so ingrained into your very being, was reduced to nothing, nothing but a scent — a familiar scent. People have told you that you underestimate yourself because you genuinely believe that you know nothing, but somehow... you know them. And as you look into the nothingness in their eyes, you can see that they know you \n\nAs you slowly guide each other and regain balance, you both pause and let silence fall. What do you say?",
       "key": "TF",
       "choices": [
-        {"choice": "BOMBOCLAT!!!!", "preference": 1},
-        {"choice": "d = √ ((a_2 - a_1)^2 + (b_2 - b_1)^2 +...+ (p_2 - p_1)^2)", "preference": 2},
-        {"choice": "The history of all hitherto societies is the history of class struggle", "preference": 3},
-        {"choice": "*attempts backflip", "preference": 4}
+        {"choice": "BOMBOCLAT!!!!", "preference": 0},
+        {"choice": "d = √ ((a_2 - a_1)^2 + (b_2 - b_1)^2 +...+ (p_2 - p_1)^2)", "preference": 1},
+        {"choice": "The history of all hitherto societies is the history of class struggle", "preference": 2},
+        {"choice": "*attempts backflip", "preference": 3}
       ]
     },
     {
@@ -126,10 +126,10 @@
       "question": "Your laptop battery is at 3%, and you still have class. What do you do?",
       "key": "TF",
       "choices": [
-        {"choice": "Hunt for nearest outlet like it’s a survival mission", "preference": 1},
-        {"choice": "Lower brightness and pray", "preference": 2},
-        {"choice": "Ask a classmate if you can borrow a charger", "preference": 3},
-        {"choice": "Close the laptop and say “mental notes na lang”", "preference": 4}
+        {"choice": "Hunt for nearest outlet like it’s a survival mission", "preference": 0},
+        {"choice": "Lower brightness and pray", "preference": 1},
+        {"choice": "Ask a classmate if you can borrow a charger", "preference": 2},
+        {"choice": "Close the laptop and say “mental notes na lang”", "preference": 3}
       ]
     },
     {
@@ -137,10 +137,10 @@
       "question": "Your professor suddenly asks the class a question, and nobody is answering. What do you do?",
       "key": "JP",
       "choices": [
-        {"choice": "Avoid eye contact at all costs", "preference": 1},
-        {"choice": "Whisper the answer to your seatmate", "preference": 2},
-        {"choice": "Raise your hand even if you’re only 60% sure", "preference": 3},
-        {"choice": "Open your notes dramatically and pretend to be busy", "preference": 4}
+        {"choice": "Avoid eye contact at all costs", "preference": 0},
+        {"choice": "Whisper the answer to your seatmate", "preference": 1},
+        {"choice": "Raise your hand even if you’re only 60% sure", "preference": 2},
+        {"choice": "Open your notes dramatically and pretend to be busy", "preference": 3}
       ]
     },
     {
@@ -148,10 +148,10 @@
       "question": "What’s your campus survival item?",
       "key": "JP",
       "choices": [
-        {"choice": "Water bottle", "preference": 1},
-        {"choice": "Portable electric fan", "preference": 2},
-        {"choice": "Umbrella", "preference": 3},
-        {"choice": "You don't bring anything at all and just wing it", "preference": 4}
+        {"choice": "Water bottle", "preference": 0},
+        {"choice": "Portable electric fan", "preference": 1},
+        {"choice": "Umbrella", "preference": 2},
+        {"choice": "You don't bring anything at all and just wing it", "preference": 3}
       ]
     },
     {
@@ -159,10 +159,10 @@
       "question": "What would you name a kambing (goat)?",
       "key": "JP",
       "choices": [
-        {"choice": "Carl Joseph Eduardo", "preference": 1},
-        {"choice": "LeBron James", "preference": 2},
-        {"choice": "Intel Panther Lake Ultra 9 280K", "preference": 3},
-        {"choice": "Brownie", "preference": 4}
+        {"choice": "Carl Joseph Eduardo", "preference": 0},
+        {"choice": "LeBron James", "preference": 1},
+        {"choice": "Intel Panther Lake Ultra 9 280K", "preference": 2},
+        {"choice": "Brownie", "preference": 3}
       ]
     }
   ]

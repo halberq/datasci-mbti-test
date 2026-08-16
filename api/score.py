@@ -74,6 +74,14 @@ def df_to_json(df):
 def populate_answers(input_list):
     return {f"Q{i + 1}": [val] for i, val in enumerate(input_list)}
 
+#butangag random theta choordinates ang nodes
+def add_theta_column(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Appends a 'theta' column with uniformly distributed float values between 1 and 360.
+    """
+    df['theta'] = np.random.uniform(1, 360, size=len(df))
+    return df
+
 def closest_node(answer_vector):
     #load upclass data
     df_up_class_data = pd.read_csv("data/mbti_dataset.csv")
@@ -96,6 +104,9 @@ def closest_node(answer_vector):
 
     #sort the data by distance
     df_up_class_data_with_distances.sort_values(by='euclidean_distance', inplace=True)
+
+    #append theta column
+    df_up_class_data_with_distances = add_theta_column(df_up_class_data_with_distances)
 
     #output the thing
     return (df_to_json(df_up_class_data_with_distances))

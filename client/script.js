@@ -271,11 +271,15 @@ function convertToPolarCartesian(userVector, personVector) {
     let sumSq = 0;
     let xDir = 0;
     let yDir = 0;
-    const numQuestions = Math.max(userVector.length, personVector.length);
+    const numQuestions = Math.min(userVector.length, personVector.length);
+
+    if (numQuestions === 0) {
+        return { x: 0, y: 0, distance: 0, theta: 0, thetaDegrees: 0 };
+    }
 
     for (let i = 0; i < numQuestions; i++) {
-        const uVal = userVector[i] || 0;
-        const pVal = personVector[i] || 0;
+        const uVal = Number(userVector[i]) || 0;
+        const pVal = Number(personVector[i]) || 0;
         const diff = pVal - uVal;
 
         // Euclidean Distance component
@@ -289,14 +293,63 @@ function convertToPolarCartesian(userVector, personVector) {
 
     const r = Math.sqrt(sumSq); // Radial distance from user
     const theta = Math.atan2(yDir, xDir); // Angular direction of deviation
+    const thetaDegrees = (theta * 180 / Math.PI + 360) % 360;
 
     // Convert polar (r, theta) to Cartesian (x, y) for Chart.js scatter
     return {
         x: parseFloat((r * Math.cos(theta)).toFixed(2)),
         y: parseFloat((r * Math.sin(theta)).toFixed(2)),
-        distance: parseFloat(r.toFixed(2))
+        distance: parseFloat(r.toFixed(2)),
+        theta: parseFloat(theta.toFixed(4)),
+        thetaDegrees: parseFloat(thetaDegrees.toFixed(1))
     };
 }
+
+const polarGridPlugin = {
+    id: "polarGrid",
+    beforeDatasetsDraw(chart, _args, options) {
+        const { ctx, chartArea, scales } = chart;
+        if (!chartArea || !scales.x || !scales.y) return;
+
+        const centerX = scales.x.getPixelForValue(0);
+        const centerY = scales.y.getPixelForValue(0);
+        const outerValue = options.maxRadius || 1;
+        const outerRadius = Math.abs(scales.x.getPixelForValue(outerValue) - centerX);
+        const ringCount = 4;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(chartArea.left, chartArea.top, chartArea.width, chartArea.height);
+        ctx.clip();
+        ctx.strokeStyle = "rgba(155, 93, 229, 0.22)";
+        ctx.fillStyle = "#a89fc2";
+        ctx.lineWidth = 1;
+        ctx.font = "11px JetBrains Mono, monospace";
+
+        for (let ring = 1; ring <= ringCount; ring++) {
+            const radius = outerRadius * ring / ringCount;
+            const value = outerValue * ring / ringCount;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillText(value.toFixed(1), centerX + 5, centerY - radius + 13);
+        }
+
+        ctx.strokeStyle = "rgba(77, 124, 254, 0.24)";
+        for (let degrees = 0; degrees < 360; degrees += 45) {
+            const angle = degrees * Math.PI / 180;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(
+                centerX + outerRadius * Math.cos(angle),
+                centerY - outerRadius * Math.sin(angle)
+            );
+            ctx.stroke();
+        }
+
+        ctx.restore();
+    }
+};
 
 function renderPolarScatterChart() {
 
@@ -336,11 +389,14 @@ function renderPolarScatterChart() {
             y: coords.y,
             name: person.Name || person.name || "Upperclassman",
             dist: coords.distance,
+            theta: coords.theta,
+            thetaDegrees: coords.thetaDegrees,
             rawPerson: person
         };
     });
 
-    console.log("Data successfully connected! Plotting points:", scatterPoints);
+    const greatestDistance = Math.max(...scatterPoints.map(point => point.dist), 1);
+    const plotLimit = Math.ceil(greatestDistance * 1.15 * 2) / 2;
 
     resultPcoordsChart = new Chart(ctx, {
         type: 'scatter',
@@ -349,15 +405,16 @@ function renderPolarScatterChart() {
                 {
                     label: 'Upperclassmen Clusters',
                     data: scatterPoints,
-                    backgroundColor: 'rgba(155, 93, 229, 0.7)',
-                    borderColor: '#9B5DE5',
-                    pointRadius: 6,
-                    pointHoverRadius: 9
+                    backgroundColor: 'rgba(155, 93, 229, 0.78)',
+                    borderColor: '#f15bb5',
+                    borderWidth: 1.5,
+                    pointRadius: 7,
+                    pointHoverRadius: 10
                 },
                 {
                     label: `You (${username || "User"})`,
                     data: [{ x: 0, y: 0, name: username || "User", dist: 0 }],
-                    backgroundColor: '#22dcf4',
+                    backgroundColor: '#4d7cfe',
                     borderColor: '#ffffff',   
                     borderWidth: 2,            
                     pointRadius: 12,           
@@ -368,7 +425,11 @@ function renderPolarScatterChart() {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'nearest',
+                intersect: true
+            },
 
             onClick: (event, elements) => {
                 if (elements.length > 0) {
@@ -386,11 +447,23 @@ function renderPolarScatterChart() {
             plugins: {
                 tooltip: {
                     callbacks: {
-                        label: (ctx) => `${ctx.raw.name} (Distance: ${ctx.raw.dist})`
+                        title: items => items[0]?.raw?.name || "Profile",
+                        label: context => {
+                            if (context.datasetIndex === 1) return "Distance: 0.00 · Origin";
+                            return [
+                                `Distance: ${context.raw.dist.toFixed(2)}`,
+                                `Theta: ${context.raw.thetaDegrees.toFixed(1)}° (${context.raw.theta.toFixed(4)} rad)`
+                            ];
+                        }
                     }
                 },
+                polarGrid: { maxRadius: plotLimit },
                 zoom: {
-                    pan: { enabled: true, mode: 'xy' },
+                    limits: {
+                        x: { min: -plotLimit * 2, max: plotLimit * 2 },
+                        y: { min: -plotLimit * 2, max: plotLimit * 2 }
+                    },
+                    pan: { enabled: true, mode: 'xy', modifierKey: 'shift' },
                     zoom: {
                         wheel: { enabled: true },
                         pinch: { enabled: true },
@@ -401,16 +474,30 @@ function renderPolarScatterChart() {
 
             scales: {
                 x: {
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                    title: { display: true, text: '← Response Trajectory →', color: '#a89fc2' }
+                    min: -plotLimit,
+                    max: plotLimit,
+                    grid: { display: false },
+                    border: { color: 'rgba(168, 159, 194, 0.35)' },
+                    ticks: { color: '#a89fc2' },
+                    title: { display: true, text: 'Polar X (r cos θ)', color: '#a89fc2' }
                 },
                 y: {
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                    title: { display: true, text: '← Response Trajectory →', color: '#a89fc2' }
+                    min: -plotLimit,
+                    max: plotLimit,
+                    grid: { display: false },
+                    border: { color: 'rgba(168, 159, 194, 0.35)' },
+                    ticks: { color: '#a89fc2' },
+                    title: { display: true, text: 'Polar Y (r sin θ)', color: '#a89fc2' }
                 }
             }
-        }
+        },
+        plugins: [polarGridPlugin]
     });
+
+    const resetButton = document.getElementById("reset-results-chart-btn");
+    if (resetButton) {
+        resetButton.onclick = () => resultPcoordsChart?.resetZoom?.();
+    }
 }
 
 function fetchAndRenderAnalytics() {
