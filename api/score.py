@@ -36,11 +36,27 @@ class handler(BaseHTTPRequestHandler):
             answers = data.get("answers", {})
             type_code = score_answers(answers)
 
+            try:
+                upperclassmen_data = csv_to_json("test_csv.csv")
+            except Exception:
+                # Fallback to alternative path if test_csv.csv is inside data folder
+                try:
+                    upperclassmen_data = csv_to_json("data/mbti_dataset.csv")
+                except Exception:
+                    upperclassmen_data = []
+
             #Return Success JSON
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
             self.wfile.write(json.dumps({"type_code": type_code}).encode('utf-8'))
+
+            response_payload = {
+                "type_code": type_code,
+                "upperclassmen": upperclassmen_data 
+            }
+            self.wfile.write(json.dumps(response_payload).encode('utf-8'))
+            return
 
         except Exception as e:
             #Catch all backend errors and return JSON instead of HTML crash page
@@ -49,19 +65,6 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             error_response = json.dumps({"error": str(e)})
             self.wfile.write(error_response.encode('utf-8'))
-
-        content_length = int(self.headers['Content-Length'])
-        raw_body = self.rfile.read(content_length)
-        data = json.loads(raw_body)
-        answers = data["answers"]
-
-        type_code = score_answers(answers)
-
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
-        self.end_headers()
-        self.wfile.write(json.dumps({"type_code": type_code}).encode('utf-8'))
-        return
 
 def csv_to_json(csv_file_path):
     df = pd.read_csv(csv_file_path)
