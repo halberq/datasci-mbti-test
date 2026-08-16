@@ -31,8 +31,6 @@ const restartBtn = document.getElementById("restart-btn");
 const resultType = document.getElementById("result-type");
 
 // Analytics elements
-const navQuizBtn = document.getElementById("nav-quiz-btn");
-const navAnalyticsBtn = document.getElementById("nav-analytics-btn");
 const pageAnalytics = document.getElementById("page-analytics");
 const analyticsTotal = document.getElementById("analytics-total");
 const axisChartTotal = document.getElementById("axis-chart-total");
@@ -47,7 +45,6 @@ const mostPickedPrevBtn = document.getElementById("most-picked-prev");
 const mostPickedNextBtn = document.getElementById("most-picked-next");
 
 // Clustering elements
-const navClusterBtn = document.getElementById("nav-cluster-btn");
 const pageCluster = document.getElementById("page-cluster");
 
 let analyticsChart = null; 
@@ -653,29 +650,6 @@ restartBtn.addEventListener("click", () => {
     usernameInput.value = "";
 
     showPage(pageUsername);
-});
-
-navAnalyticsBtn.addEventListener("click", () => {
-    const currentlyActive = document.querySelector(".page.active");
-    
-    if (currentlyActive !== pageAnalytics) {
-            previousPage = currentlyActive;
-        }
-
-    showPage(pageAnalytics);
-    startPolling(); 
-});
-
-navClusterBtn.addEventListener("click", () => {
-    const currentlyActive = document.querySelector(".page.active");
-    if (currentlyActive !== pageCluster) previousPage = currentlyActive; 
-    showPage(pageCluster);
-    renderClusters();
-});
-
-navQuizBtn.addEventListener("click", () => {
-    stopPolling(); 
-    showPage(previousPage);
 });
 
 mostPickedPrevBtn.addEventListener("click", () => {
