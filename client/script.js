@@ -101,11 +101,15 @@ function selectAnswer(questionId, preference) {
 }
 
 function submitAnswers() {
+    console.log("%c[Quiz Submit] User completed quiz. Answers payload:", "color: #ff9f1c; font-weight: bold;", userAnswers);
     resultMessage.textContent = `${username}, your profile vector is complete!`;
     showPage(pageResult);
 
     const clusterDistances = computeClusterDistances();
+    console.log("[Quiz Submit] Computed cluster distances relative to user:", clusterDistances);
     renderClusters();
+
+    console.log("[Quiz Submit] Attempting backend sync to /api/score...");
 
     fetch("/api/score", {
         method: "POST",
@@ -135,12 +139,10 @@ function submitAnswers() {
                     answers: item
                 };
             });
-
+        }   else {
+            console.warn("[Backend Sync] Backend returned response, but 'upperclassmen' array was empty.");
             renderPolarScatterChart();
-
-            } else {
-            console.warn("No upperclassmen data received from backend.");
-        }
+            }
 
         resultMessage.textContent = `${username}, your profile vector is complete!`;
         showPage(pageResult);
@@ -148,7 +150,7 @@ function submitAnswers() {
         const sessionData = {
             username: username,
             answers: userAnswers
-        };
+        };  
         sendToGoogleSheets(sessionData);
     })
     .catch(error => {
@@ -598,10 +600,16 @@ function stopPolling() {
     pollIntervalId = null;
 }
 
+const RESPONSES_CSV_PATH = "responses.csv";
+
 function loadUpperclassmenData() {
-    fetch("responses.csv")
+
+    console.log(`%c[1. CSV Loader] Fetching dataset from: ${RESPONSES_CSV_PATH}`, "color: #4d7cfe; font-weight: bold;");
+
+    fetch(RESPONSES_CSV_PATH)
         .then(response => response.text())
         .then(csvText => {
+            console.log("%c[2. CSV Loader] Raw CSV loaded. Parsing rows...", "color: #4d7cfe;");
             const lines = csvText.trim().split("\n");
             
             const parseCSVRow = (row) => row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) 
@@ -609,10 +617,11 @@ function loadUpperclassmenData() {
                 : row.split(',').map(v => v.trim());
 
             const headers = parseCSVRow(lines[0]);    
+            console.log("[3. CSV Loader] Parsed Headers:", headers);
 
             // Convert CSV rows into data vectors
             celebsData = lines.slice(1).map(line => {
-                const values = line.split(",").map(v => v.trim());
+                const values = parseCSVRow(line);
                 const rowData = {};
                 headers.forEach((header, index) => {
                     rowData[header] = values[index];
@@ -638,10 +647,10 @@ function loadUpperclassmenData() {
                     vector: vector
                 };
             });
-
+            console.log(`%c[4. CSV Loader] Successfully loaded ${celebsData.length} upperclassmen profiles:`, "color: #2ec4b6; font-weight: bold;", celebsData);
             renderClusters();
         })
-        .catch(error => console.error("Error loading CSV test data:", error));
+        .catch(error => console.error("%c[CSV Loader Error] Failed to load actual responses:", "color: #e71d36; font-weight: bold;", error));
 }
 
 function renderClusters() {
