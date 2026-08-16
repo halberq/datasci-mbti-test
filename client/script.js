@@ -646,7 +646,13 @@ function renderPolarScatterChart(upperclassmenData) {
 
     resultRadarChart = new Chart(ctx, {
         type: 'scatter', 
-        data: { "test_csv.csv" },
+        data: { upperclassmen_data: upperclassmenData.map(person => {
+            const userVector = getUserAnswerVector();
+            const personVector = Object.keys(person.answers).sort().map(k => person.answers[k]);
+            const coords = convertToPolarCartesian(userVector, personVector);
+            return { x: coords.x, y: coords.y };
+        })},
+        
         options: {
             // Add click event directly to chart options
             onClick: (event, elements) => {
