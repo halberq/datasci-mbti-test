@@ -618,6 +618,51 @@ function computeClosestNodes(userVector) {
     return datasetWithDistances;
 }
 
+function openBioPanel(person) {
+    const panel = document.getElementById("bio-panel");
+    const bioName = document.getElementById("bio-name");
+    const bioText = document.getElementById("bio-text");
+    const bioAvatar = document.getElementById("bio-avatar");
+
+    bioName.textContent = person.Name || "Anonymous Upperclassman";
+    bioText.textContent = person.Bio || person.description || "No bio available.";
+    
+    // Fallback image if custom image path is not provided in CSV
+    bioAvatar.src = person.Image || "client/default-avatar.png"; 
+
+    panel.classList.add("active");
+}
+
+document.getElementById("close-bio-btn").addEventListener("click", () => {
+    document.getElementById("bio-panel").classList.remove("active");
+});
+
+function renderPolarScatterChart(upperclassmenData) {
+    const canvas = document.getElementById("results-pcords-chart");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    if (resultRadarChart) resultRadarChart.destroy();
+
+    resultRadarChart = new Chart(ctx, {
+        type: 'scatter', 
+        data: { "test_csv.csv" },
+        options: {
+            // Add click event directly to chart options
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const clickedIndex = elements[0].index;
+                    const selectedPerson = upperclassmenData[clickedIndex];
+                    
+                    if (selectedPerson) {
+                        openBioPanel(selectedPerson);
+                    }
+                }
+            },
+        }
+    });
+}
+
 usernameConfirmBtn.addEventListener("click", () => {
     const enteredUsername = usernameInput.value.trim();
 
