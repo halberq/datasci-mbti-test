@@ -13,24 +13,24 @@
     },
     {
       "id": "q2",
-      "question": "Who is your favorite national hero?",
+      "question": "Your code works, but you don't know why. What's your next move?",
       "key": "EI",
       "choices": [
-        {"choice": "Jose Rizal", "preference": 1},
-        {"choice": "Andres Bonifacio", "preference": 2},
-        {"choice": "Rodrigo Roa Duterte", "preference": 3},
-        {"choice": "Rene Baterbonia", "preference": 4}
+        {"choice": "Don't touch it. it's sacred now", "preference": 1},
+        {"choice": "Try to understand it before submitting", "preference": 2},
+        {"choice": "Add comments and go through the code again line by line", "preference": 3},
+        {"choice": "Whisper “thank you” to the coding gods and move on", "preference": 4}
       ]
     },
     {
       "id": "q3",
-      "question": "Your professor says you can cheat during the exam, as long as you aren't caught. What do you do?",
+      "question": "You have a long break between classes. Where are you most likely to be found?",
       "key": "EI",
       "choices": [
-        {"choice": "Bring your own cheatsheet", "preference": 1},
-        {"choice": "Sit next to the smart kid and glance at their answers", "preference": 2},
-        {"choice": "Answer the exam without cheating", "preference": 3},
-        {"choice": "Blatantly open your phone and ask ChatGPT for answers", "preference": 4}
+        {"choice": "In the library, pretending to study but actually doom-scrolling", "preference": 1},
+        {"choice": "In the cafeteria, looking for food", "preference": 2},
+        {"choice": "In your dorm, sleeping like a legend", "preference": 3},
+        {"choice": "Walking around the campus for no reason", "preference": 4}
       ]
     },
     {
@@ -46,13 +46,13 @@
     },
     {
       "id": "q5",
-      "question": "Your class got cancelled because the professor didn’t show up. How are you going to spend your free time?",
+      "question": "You are assigned to present your group’s work. How do you prepare?",
       "key": "SN",
       "choices": [
-        {"choice": "Study the supposed class’ topic yourself", "preference": 1},
-        {"choice": "Go back to your dorm to sleep", "preference": 2},
-        {"choice": "Explore the campus for niche spots", "preference": 3},
-        {"choice": "Go to SM instead to have fun", "preference": 4}
+        {"choice": "Practice the whole presentation multiple times", "preference": 1},
+        {"choice": "Read the slides once and trust your instincts", "preference": 2},
+        {"choice": "Memorize only your part and hope nobody asks questions", "preference": 3},
+        {"choice": "Let adrenaline possess you during the presentation", "preference": 4}
       ]
     },
     {
@@ -94,20 +94,20 @@
       "key": "TF",
       "choices": [
         {"choice": "Yes", "preference": 1},
-        {"choice": "Yes", "preference": 2},
+        {"choice": "YesYes", "preference": 2},
         {"choice": "SUPER Yes", "preference": 3},
         {"choice": "Click here for Non-DS (sadly bawal mo sa CODEx)", "preference": 4}
       ]
     },
     {
       "id": "q10",
-      "question": "What is your favorite thing about PAX Silica",
+      "question": "You’re choosing a seat on the first day of class. Where do you sit?",
       "key": "TF",
       "choices": [
-        {"choice": "Economic Development", "preference": 1},
-        {"choice": "Yummy carcinogenic water", "preference": 2},
-        {"choice": "Tinnitus", "preference": 3},
-        {"choice": "Fuck dem sea turtles", "preference": 4}
+        {"choice": "Front row, ready to focus", "preference": 1},
+        {"choice": "In the middle row, balanced and safe", "preference": 2},
+        {"choice": "In the back row, mysterious and strategic", "preference": 3},
+        {"choice": "Beside the person who looks friendly", "preference": 4}
       ]
     },
     {
@@ -126,10 +126,10 @@
       "question": "Your laptop battery is at 3%, and you still have class. What do you do?",
       "key": "TF",
       "choices": [
-        {"choice": "hunt for nearest outlet like it’s a survival mission", "preference": 1},
-        {"choice": "lower brightness and pray", "preference": 2},
-        {"choice": "ask a classmate if you can borrow a charger", "preference": 3},
-        {"choice": "close the laptop and say “mental notes na lang”", "preference": 4}
+        {"choice": "Hunt for nearest outlet like it’s a survival mission", "preference": 1},
+        {"choice": "Lower brightness and pray", "preference": 2},
+        {"choice": "Ask a classmate if you can borrow a charger", "preference": 3},
+        {"choice": "Close the laptop and say “mental notes na lang”", "preference": 4}
       ]
     },
     {
@@ -137,10 +137,10 @@
       "question": "Your professor suddenly asks the class a question, and nobody is answering. What do you do?",
       "key": "JP",
       "choices": [
-        {"choice": "avoid eye contact at all costs", "preference": 1},
-        {"choice": "whisper the answer to your seatmate", "preference": 2},
-        {"choice": "raise your hand even if you’re only 60% sure", "preference": 3},
-        {"choice": "open your notes dramatically and pretend to be busy", "preference": 4}
+        {"choice": "Avoid eye contact at all costs", "preference": 1},
+        {"choice": "Whisper the answer to your seatmate", "preference": 2},
+        {"choice": "Raise your hand even if you’re only 60% sure", "preference": 3},
+        {"choice": "Open your notes dramatically and pretend to be busy", "preference": 4}
       ]
     },
     {
@@ -148,32 +148,21 @@
       "question": "What’s your campus survival item?",
       "key": "JP",
       "choices": [
-        {"choice": "water bottle", "preference": 1},
-        {"choice": "portable electric fan", "preference": 2},
-        {"choice": "umbrella", "preference": 3},
-        {"choice": "you don't bring anything at all and just wing it", "preference": 4}
+        {"choice": "Water bottle", "preference": 1},
+        {"choice": "Portable electric fan", "preference": 2},
+        {"choice": "Umbrella", "preference": 3},
+        {"choice": "You don't bring anything at all and just wing it", "preference": 4}
       ]
     },
     {
       "id": "q15",
-      "question": "What would you name a kambing",
+      "question": "What would you name a kambing (goat)?",
       "key": "JP",
       "choices": [
         {"choice": "Carl Josef Eduardo", "preference": 1},
-        {"choice": "Franzo Sitchon", "preference": 2},
+        {"choice": "LeBron James", "preference": 2},
         {"choice": "Intel Panther Lake Ultra 9 280K", "preference": 3},
-        {"choice": "brownie", "preference": 4}
-      ]
-    },
-    {
-      "id": "q16",
-      "question": "Kinsa imong kanding (goat) sa DS",
-      "key": "JP",
-      "choices": [
-        {"choice": "Jemina Jasin", "preference": 1},
-        {"choice": "Amado Vince Mendoza", "preference": 2},
-        {"choice": "Franz Sazon", "preference": 3},
-        {"choice": "Eli Lamzon", "preference": 4}
+        {"choice": "Brownie", "preference": 4}
       ]
     }
   ]
