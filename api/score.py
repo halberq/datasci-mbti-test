@@ -37,7 +37,7 @@ class handler(BaseHTTPRequestHandler):
             type_code = score_answers(answers)
 
             try:
-                upperclassmen_data = csv_to_json("test_csv.csv")
+                upperclassmen_data = csv_to_json("formatted_responses.csv")
             except Exception:
                 print("BACKEND CSV ERROR:")
                 # Fallback to alternative path if test_csv.csv is inside data folder
@@ -84,7 +84,7 @@ def add_theta_column(df: pd.DataFrame) -> pd.DataFrame:
 
 def closest_node(answer_vector):
     #load upclass data
-    df_up_class_data = pd.read_csv("data/mbti_dataset.csv")
+    df_up_class_data = pd.read_csv("formatted_responses.csv")
 
     #i-lahi ang asnwers sa mga upclass
     df_up_class_answers = df_up_class_data.drop(columns=['Name'])
