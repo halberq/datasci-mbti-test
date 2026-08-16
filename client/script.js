@@ -599,7 +599,7 @@ function stopPolling() {
 }
 
 function loadUpperclassmenData() {
-    fetch("test_csv.csv")
+    fetch("formatted_responses.csv")
         .then(response => response.text())
         .then(csvText => {
             const lines = csvText.trim().split("\n");
@@ -612,7 +612,7 @@ function loadUpperclassmenData() {
 
             // Convert CSV rows into data vectors
             celebsData = lines.slice(1).map(line => {
-                const values = line.split(",").map(v => v.trim());
+                const values = parseCSVRow(line);
                 const rowData = {};
                 headers.forEach((header, index) => {
                     rowData[header] = values[index];
