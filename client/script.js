@@ -60,7 +60,33 @@ let hasLoadedAnalyticsOnce = false;
 let mostPickedResults = []; 
 let mostPickedIndex = 0; 
 let celebsData = [];
-let resultPcoordsChart = null;
+
+let resultPcoordsChart = new Chart(ctx, {
+     type: 'scatter',
+    data: {
+        datasets: [
+            {
+                 label: 'Upperclassmen Clusters',
+                data: scatterPoints,
+                backgroundColor: 'rgba(155, 93, 229, 0.7)',
+                borderColor: '#9B5DE5',
+                pointRadius: 6,
+                pointHoverRadius: 9
+            },
+            {
+                
+                label: `You (${username || "User"})`,
+                data: [{ x: 0, y: 0, name: username || "User", dist: 0 }],
+                backgroundColor: '#F15BB5',
+                borderColor: '#ffffff',   
+                borderWidth: 2,            
+                pointRadius: 12,           
+                pointHoverRadius: 14,
+                pointStyle: 'star'
+            }
+        ]
+    },
+});
 
 function showPage(pageToShow) {
     [pageUsername, pageIntro, pageQuiz, pageResult, pageAnalytics, pageCluster].forEach(page => page.classList.remove("active"));

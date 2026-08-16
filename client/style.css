@@ -280,6 +280,6 @@ canvas {
 
 .chart-container {
     position: relative;
-    height: 400px; /* Or 50vh, whatever fits your UI */
+    height: 800px; 
     width: 100%;
 }
