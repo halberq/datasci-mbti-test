@@ -31,8 +31,6 @@ const restartBtn = document.getElementById("restart-btn");
 const resultType = document.getElementById("result-type");
 
 // Analytics elements
-const navQuizBtn = document.getElementById("nav-quiz-btn");
-const navAnalyticsBtn = document.getElementById("nav-analytics-btn");
 const pageAnalytics = document.getElementById("page-analytics");
 const analyticsTotal = document.getElementById("analytics-total");
 const axisChartTotal = document.getElementById("axis-chart-total");
@@ -47,7 +45,6 @@ const mostPickedPrevBtn = document.getElementById("most-picked-prev");
 const mostPickedNextBtn = document.getElementById("most-picked-next");
 
 // Clustering elements
-const navClusterBtn = document.getElementById("nav-cluster-btn");
 const pageCluster = document.getElementById("page-cluster");
 
 let analyticsChart = null; 
@@ -60,6 +57,7 @@ let hasLoadedAnalyticsOnce = false;
 let mostPickedResults = []; 
 let mostPickedIndex = 0; 
 let celebsData = [];
+let resultPcoordsChart = null;
 
 function showPage(pageToShow) {
     [pageUsername, pageIntro, pageQuiz, pageResult, pageAnalytics, pageCluster].forEach(page => page.classList.remove("active"));
@@ -147,6 +145,8 @@ function submitAnswers() {
     })
     .catch(error => {
         console.warn("Background API sync failed, using client-rendered results:", error);
+        celebsData = celebsData || []; // Ensure it remains an array
+        renderPolarScatterChart();
         // Render locally if backend API endpoint is offline
     });
 }
@@ -267,8 +267,10 @@ function renderChart(counts) {
     }
 }
 
-function calculateDistanceOnly(userVector, personVector) {
+function convertToPolarCartesian(userVector, personVector) {
     let sumSq = 0;
+    let xDir = 0;
+    let yDir = 0;
     const numQuestions = Math.max(userVector.length, personVector.length);
 
     for (let i = 0; i < numQuestions; i++) {
@@ -278,9 +280,22 @@ function calculateDistanceOnly(userVector, personVector) {
 
         // Euclidean Distance component
         sumSq += diff * diff;
+
+        // Angle direction based on which questions differed
+        const phi = (i / numQuestions) * 2 * Math.PI;
+        xDir += diff * Math.cos(phi);
+        yDir += diff * Math.sin(phi);
     }
 
-    return parseFloat(Math.sqrt(sumSq).toFixed(2));
+    const r = Math.sqrt(sumSq); // Radial distance from user
+    const theta = Math.atan2(yDir, xDir); // Angular direction of deviation
+
+    // Convert polar (r, theta) to Cartesian (x, y) for Chart.js scatter
+    return {
+        x: parseFloat((r * Math.cos(theta)).toFixed(2)),
+        y: parseFloat((r * Math.sin(theta)).toFixed(2)),
+        distance: parseFloat(r.toFixed(2))
+    };
 }
 
 function renderPolarScatterChart() {
@@ -292,11 +307,16 @@ function renderPolarScatterChart() {
     }
     const ctx = canvas.getContext("2d");
 
-    if (resultRadarChart) resultRadarChart.destroy();
+    if (resultPcoordsChart) resultPcoordsChart.destroy();
 
     const userVector = getUserAnswerVector();
 
-    const peopleWithDistance = safeCelebsData.map(person => {
+    // Ensure celebsData is an array before calling .map()
+    const safeCelebsData = Array.isArray(celebsData) ? celebsData : [];
+
+    // Map upperclassmen into (x, y) offset relative to user
+    const scatterPoints = safeCelebsData.map(person => {
+
         let personVector = [];
         if (Array.isArray(person.vector)) {
             personVector = person.vector;
@@ -309,25 +329,14 @@ function renderPolarScatterChart() {
                 .map(k => Number(person[k]) || 0);
         }
 
+        const coords = convertToPolarCartesian(userVector, personVector);
+
         return {
+            x: coords.x,
+            y: coords.y,
             name: person.Name || person.name || "Upperclassman",
-            distance: calculateDistanceOnly(userVector, personVector),
+            dist: coords.distance,
             rawPerson: person
-        };
-    });
-
-    peopleWithDistance.sort((a, b) => a.distance - b.distance);
-
-    const total = peopleWithDistance.length;
-    const scatterPoints = peopleWithDistance.map((person, index) => {
-        const angle = (index / total) * 2 * Math.PI; // evenly spaced, same formula as renderClusters()
-
-        return {
-            x: parseFloat((person.distance * Math.cos(angle)).toFixed(2)), // convert (r, theta) -> x
-            y: parseFloat((person.distance * Math.sin(angle)).toFixed(2)), // convert (r, theta) -> y
-            name: person.name,
-            dist: person.distance,
-            rawPerson: person.rawPerson // preserved — still needed for the bio panel's onClick handler
         };
     });
 
@@ -338,26 +347,42 @@ function renderPolarScatterChart() {
         data: {
             datasets: [
                 {
-                    label: `You (${username || "User"})`,
-                    data: [{ x: 0, y: 0, name: username || "User", dist: 0 }],
-                    backgroundColor: '#F15BB5',
-                    pointRadius: 10,
-                    pointHoverRadius: 12,
-                    pointStyle: 'star'
-                },
-                {
                     label: 'Upperclassmen Clusters',
                     data: scatterPoints,
                     backgroundColor: 'rgba(155, 93, 229, 0.7)',
                     borderColor: '#9B5DE5',
                     pointRadius: 6,
                     pointHoverRadius: 9
+                },
+                {
+                    label: `You (${username || "User"})`,
+                    data: [{ x: 0, y: 0, name: username || "User", dist: 0 }],
+                    backgroundColor: '#22dcf4',
+                    borderColor: '#ffffff',   
+                    borderWidth: 2,            
+                    pointRadius: 12,           
+                    pointHoverRadius: 14,
+                    pointStyle: 'circle'
                 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: true,
+
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const firstElement = elements[0];
+
+                    if (firstElement.datasetIndex === 0) {
+                        const clickedPoint = scatterPoints[firstElement.index];
+                        if (clickedPoint && clickedPoint.rawPerson) {
+                            openBioPanel(clickedPoint.rawPerson);
+                        }
+                    }
+                }
+            },
+
             plugins: {
                 tooltip: {
                     callbacks: {
@@ -373,6 +398,7 @@ function renderPolarScatterChart() {
                     }
                 }
             },
+
             scales: {
                 x: {
                     grid: { color: 'rgba(255, 255, 255, 0.1)' },
@@ -625,6 +651,25 @@ function computeClosestNodes(userVector) {
     return datasetWithDistances;
 }
 
+function openBioPanel(person) {
+    const panel = document.getElementById("bio-panel");
+    const bioName = document.getElementById("bio-name");
+    const bioText = document.getElementById("bio-text");
+    const bioAvatar = document.getElementById("bio-avatar");
+
+    bioName.textContent = person.Name || "Anonymous Upperclassman";
+    bioText.textContent = person.Bio || person.description || "No bio available.";
+    
+    // Fallback image if custom image path is not provided in CSV
+    bioAvatar.src = person.Image || "client/default-avatar.png"; 
+
+    panel.classList.add("active");
+}
+
+document.getElementById("close-bio-btn").addEventListener("click", () => {
+    document.getElementById("bio-panel").classList.remove("active");
+});
+
 usernameConfirmBtn.addEventListener("click", () => {
     const enteredUsername = usernameInput.value.trim();
 
@@ -657,29 +702,6 @@ restartBtn.addEventListener("click", () => {
     usernameInput.value = "";
 
     showPage(pageUsername);
-});
-
-navAnalyticsBtn.addEventListener("click", () => {
-    const currentlyActive = document.querySelector(".page.active");
-    
-    if (currentlyActive !== pageAnalytics) {
-            previousPage = currentlyActive;
-        }
-
-    showPage(pageAnalytics);
-    startPolling(); 
-});
-
-navClusterBtn.addEventListener("click", () => {
-    const currentlyActive = document.querySelector(".page.active");
-    if (currentlyActive !== pageCluster) previousPage = currentlyActive; 
-    showPage(pageCluster);
-    renderClusters();
-});
-
-navQuizBtn.addEventListener("click", () => {
-    stopPolling(); 
-    showPage(previousPage);
 });
 
 mostPickedPrevBtn.addEventListener("click", () => {
