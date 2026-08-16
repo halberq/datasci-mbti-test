@@ -325,6 +325,13 @@ function openBioPanel(person) {
     if (bioText) bioText.textContent = person.Bio || person["About Me"] || person.description || "No bio available.";
     if (bioAvatar) bioAvatar.src = person.Image || "client/default-avatar.png"; 
 
+    bioText.innerHTML = `
+        <div style="margin-top: 18px;">
+            <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.7; margin-bottom: 6px;">About Me</div>
+            <div style="font-size: 1rem; line-height: 1.4;">${bioContent}</div>
+        </div>
+    `;
+
     panel.classList.add("active");
 }
 
