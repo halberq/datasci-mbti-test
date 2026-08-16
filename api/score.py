@@ -37,6 +37,9 @@ class handler(BaseHTTPRequestHandler):
             type_code = score_answers(answers)
 
             try:
+
+                df = pd.read_csv("ADD THE DATASET HERE DAWG")
+
                 upperclassmen_data = csv_to_json("test_csv.csv")
             except Exception:
                 # Fallback to alternative path if test_csv.csv is inside data folder
