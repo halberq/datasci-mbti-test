@@ -59,6 +59,35 @@ let mostPickedIndex = 0;
 let celebsData = [];
 let resultPcoordsChart = null;
 
+const profilePictures = {
+    "Cahleil Jadyn C. Lumapas": "pics/Lumapas, Cahleil Jadyn C..png",
+    "Johanna Marie Telen": "pics/Johanna Marie Telen.png",
+    "Stephanie Dajao": "pics/Stephanie Dajao.png",
+    "Mhaezi R. Villarosa": "pics/Mhaezi R. Villarosa.png",
+    "Louie Andrei B. Antonio": "pics/Antonio, Louie Andrei B..png",
+    "Johann Emmanuel L. del Fierro": "pics/del Fierro, Johann Emmanuel L..png",
+    "Carl Joseph G. Eduardo": "pics/Eduardo, Carl Joseph G..png",
+    "Allexus Angello M. Gulleban": "pics/Gulleban, Allexus Angello M..png",
+    "Brian Benedict L. de Castro": "pics/de Castro, Brian Benedict L..png",
+    "Zane Ibn DeLorean D. Ceballos": "pics/Ceballos, Zane Ibn DeLorean D..png",
+    "Jamina C. H. Acmad": "pics/Jamina C H Acmad.png",
+    "Lance Benedict B. Senarillos": "pics/Senarillos, Lance Benedict B.png",
+    "Francis Paul Kollin J. Morales": "pics/Morales, Francis Paul Kollin J.png",
+    "Ralph Lawrence O. Melana": "pics/Melana, Ralph Lawrence O.png",
+    "Ranulfo Benj A. Semblante": "pics/Semblante, Ranulfo Benj A.png",
+    "Mark Neil O. Besares": "pics/Besares, Mark Neil O.png",
+    "Halbert Melqui T. Faller": "pics/Halbert Melqui T Faller.png",
+    "Amado Vicente A. Mendoza": "pics/Mendoza, Amado Vicente A.png",
+    "Leo R. Goyena": "pics/Leo R Goyena.png"
+};
+
+const plotPictures = Object.fromEntries(Object.entries(profilePictures).map(([name, src]) => {
+    const image = new Image(30, 30);
+    image.onload = () => resultPcoordsChart?.draw();
+    image.src = src;
+    return [name, image];
+}));
+
 function showPage(pageToShow) {
     [pageUsername, pageIntro, pageQuiz, pageResult, pageAnalytics, pageCluster].forEach(page => page.classList.remove("active"));
     pageToShow.classList.add("active");
@@ -131,6 +160,7 @@ function submitAnswers() {
                 return {
                     Name: item.Name || "Upperclassman",
                     Bio: item["About Me"] || item.Bio || item.description || "No bio provided.",
+                    Image: profilePictures[item.Name],
                     vector: vector,
                     answers: item
                 };
@@ -421,6 +451,7 @@ function renderPolarScatterChart() {
             dist: coords.distance,
             theta: coords.theta,
             thetaDegrees: coords.thetaDegrees,
+            picture: plotPictures[person.Name || person.name],
             rawPerson: person
         };
     });
@@ -455,7 +486,7 @@ function renderPolarScatterChart() {
                     borderWidth: scatterPoints.map((_point, index) => index === 0 ? 3 : 1.5),
                     pointRadius: scatterPoints.map((_point, index) => index === 0 ? 12 : 7),
                     pointHoverRadius: scatterPoints.map((_point, index) => index === 0 ? 15 : 10),
-                    pointStyle: scatterPoints.map((_point, index) => index === 0 ? 'star' : 'circle')
+                    pointStyle: scatterPoints.map((point, index) => point.picture || (index === 0 ? 'star' : 'circle'))
                 },
                 {
                     label: `You (${username || "User"})`,
