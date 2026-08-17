@@ -184,19 +184,6 @@ button.primary:hover, #start-btn:hover, #restart-btn:hover, #username-confirm-bt
     line-height: 1.5;
 }
 
-.closest-match-label {
-    margin: 1rem 0 1.5rem;
-    padding: 0.9rem 1.1rem;
-    background: linear-gradient(135deg, rgba(155, 93, 229, 0.2), rgba(241, 91, 181, 0.16));
-    border: 1px solid var(--pink);
-    border-radius: 12px;
-    color: var(--text);
-    font-family: "Space Grotesk", Helvetica, Arial, sans-serif;
-    font-size: 1.05rem;
-    font-weight: 700;
-    box-shadow: 0 0 24px rgba(241, 91, 181, 0.12);
-}
-
 .bio-panel {
     position: fixed;
     top: 0;
@@ -386,18 +373,23 @@ canvas {
     }
 }
 
-function openBioPanel(person) {
-    const panel = document.getElementById("bio-panel");
-    const bioName = document.getElementById("bio-name");
-    const bioText = document.getElementById("bio-text");
-    const bioAvatar = document.getElementById("bio-avatar");
-
-    if (!panel) return;
-
-    if (bioName) bioName.textContent = person.Name || person.name || "Anonymous Upperclassman";
-    if (bioText) bioText.textContent = person.Bio || person["About Me"] || person.description || "No bio available.";
-    if (bioAvatar) bioAvatar.src = person.Image || "client/default-avatar.png"; 
-
-    panel.classList.add("active");
+.bio-section {
+    margin-top: 20px;
+    text-align: left;
 }
 
+.bio-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #a89fc2;
+    margin-bottom: 6px;
+}
+
+#bio-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+}
